@@ -76,7 +76,11 @@ const Main = () => {
                             </Text>
                             <TouchableOpacity
                                 style={MainStyle.registrationButton}
-                                onPress={() => navigation.navigate('UseCar', { vehicleId: vehicle.id })}
+                                onPress={() => navigation.navigate('UseCar', {
+                                        vehicleId: vehicle.id,
+                                        licensePlateNumber: vehicle.license_plate_number,
+                                        totalMileage: vehicle.total_mileage
+                                    })}
                             >
                                 <Text style={MainStyle.registrationButtonText}>사용 등록</Text>
                             </TouchableOpacity>
@@ -103,3 +107,4 @@ const Main = () => {
 };
 
 export default Main;
+// 11/16 10:28 운행기록 api 연결 직전
