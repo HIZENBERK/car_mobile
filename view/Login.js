@@ -1,40 +1,44 @@
-// Login.js
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button } from 'react-native';
 import LoginStyles from '../style/LoginStyle'; // 스타일 파일 import
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage import 추가
+
 const Login = ({ onLogin }) => {
     const [emailOrPhone, setEmailOrPhone] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('')
+    const [error, setError] = useState('');
 
-    const handleLogin = async (e) => {
-        e.preventDefault(); // 기본 폼 제출 이벤트 방지
+    const handleLogin = async () => {
         setError(''); // 이전 에러 메시지 초기화
-        console.log('로그인 정보 확인:', 'email_or_phone:' ,emailOrPhone,'\n', 'password:', password);
+        console.log('로그인 정보 확인:', 'email_or_phone:', emailOrPhone, '\n', 'password:', password);
+
         try {
+            // 서버에 로그인 요청 보내기
             const response = await axios.post('https://hizenberk.pythonanywhere.com/api/login/', {
                 'email_or_phone': emailOrPhone,
                 'password': password,
             });
-            // setLogoutSuccess('');
-            // // 로그인 성공 시 처리 (예: 토큰 저장, 리다이렉트 등)
-            // console.log('데이터 체크:', response.data.refresh, "\n",
-            //     response.data.access,"\n",
-            //     response.data.user_info.company.name,"\n",
-            //     response.data.user_info.department,"\n",
-            //     response.data.user_info.name);
-            // login(
-            //     response.data.refresh,
-            //     response.data.access,
-            //     response.data.user_info.company.name,
-            //     response.data.user_info.department,
-            //     response.data.user_info.name,
-            // )
+
+            // 로그인 성공시 콘솔에 데이터 출력
             console.log('로그인 성공:', response.data);
+
+            // 서버로부터 받은 accessToken을 추출하여 AsyncStorage에 저장
+            const { access } = response.data;
+
+            if (!access) {
+                throw new Error('서버로부터 유효한 토큰을 받지 못했습니다.');
+            }
+
+            // 토큰 저장 (비동기 작업에 대해 await 사용)
+            await AsyncStorage.setItem('access', access);
+            console.log('토큰 저장 완료:', access);
+
+            // onLogin 콜백 호출하여 로그인 후의 작업 진행
             onLogin();
         } catch (err) {
-            console.error('로그인 실패:', err.response?.data);
+            // 오류 처리: 로그인 실패 또는 네트워크 오류
+            console.error('로그인 실패:', err.response?.data || err.message);
             setError('로그인에 실패했습니다. 이메일 또는 비밀번호를 확인하세요.');
         }
     };
@@ -56,6 +60,7 @@ const Login = ({ onLogin }) => {
                 onChangeText={setPassword}
             />
             <Button title="로그인" onPress={handleLogin} />
+            {error ? <Text style={LoginStyles.errorText}>{error}</Text> : null}
         </View>
     );
 };
