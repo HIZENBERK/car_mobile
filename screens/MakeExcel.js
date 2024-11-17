@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity, StyleSheet, Animated } from 'react-native';
+import { View, Text, TextInput, Button, FlatList, TouchableOpacity, StyleSheet, Animated, TouchableWithoutFeedback } from 'react-native';
 import makeExcelStyle from '../style/MakeExcelStyle';
 import SideMenu from './SideMenu'; // 사이드 메뉴 컴포넌트 import
 import { useNavigation } from '@react-navigation/native'; // useNavigation 임포트
@@ -44,48 +44,50 @@ const MakeExcel = () => {
     ];
 
     return (
-        <View style={makeExcelStyle.container}>
-            {/* 헤더 */}
-            <View style={makeExcelStyle.header}>
-                <Text style={makeExcelStyle.title}>[번호] 134가 1234</Text>
-                <TouchableOpacity style={makeExcelStyle.downloadIcon}>
-                    <Text>⬇️ 다운로드</Text>
-                </TouchableOpacity>
-            </View>
-
-            {/* 검색 바 */}
-            <View style={makeExcelStyle.searchBar}>
-                <TextInput style={makeExcelStyle.input} placeholder="조회기간" />
-                <Button title="선택 생성" onPress={() => {}} />
-            </View>
-
-            {/* 항목 리스트 */}
-            <FlatList
-                data={data}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) => (
-                    <TouchableOpacity style={makeExcelStyle.item}>
-                        <Text>{item.name}</Text>
-                        <Button title={item.details} onPress={() => {}} />
+        <TouchableWithoutFeedback onPress={closeSideMenu}>
+            <View style={makeExcelStyle.container}>
+                {/* 헤더 */}
+                <View style={makeExcelStyle.header}>
+                    <Text style={makeExcelStyle.title}>[번호] 134가 1234</Text>
+                    <TouchableOpacity style={makeExcelStyle.downloadIcon}>
+                        <Text>⬇️ 다운로드</Text>
                     </TouchableOpacity>
-                )}
-            />
+                </View>
 
-            {/* 푸터 */}
-            <View style={makeExcelStyle.footer}>
-                <TouchableOpacity style={[styles.button, styles.equalButton]} onPress={toggleSideMenu}>
-                    <Text style={styles.buttonText}>=</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, styles.searchButton]} onPress={() => {}}>
-                    <Text style={styles.buttonText}>차량검색</Text>
-                </TouchableOpacity>
+                {/* 검색 바 */}
+                <View style={makeExcelStyle.searchBar}>
+                    <TextInput style={makeExcelStyle.input} placeholder="조회기간" />
+                    <Button title="선택 생성" onPress={() => {}} />
+                </View>
+
+                {/* 항목 리스트 */}
+                <FlatList
+                    data={data}
+                    keyExtractor={(item) => item.id}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={makeExcelStyle.item}>
+                            <Text>{item.name}</Text>
+                            <Button title={item.details} onPress={() => {}} />
+                        </TouchableOpacity>
+                    )}
+                />
+
+                {/* 푸터 */}
+                <View style={makeExcelStyle.footer}>
+                    <TouchableOpacity style={[styles.button, styles.equalButton]} onPress={toggleSideMenu}>
+                        <Text style={styles.buttonText}>=</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.button, styles.searchButton]} onPress={() => {}}>
+                        <Text style={styles.buttonText}>차량검색</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {/* 사이드 메뉴 */}
+                <Animated.View style={[styles.menuContainer, { transform: [{ translateX: menuAnimation }] }]}>
+                    <SideMenu navigation={navigation} />
+                </Animated.View>
             </View>
-
-            {/* 사이드 메뉴 */}
-            <Animated.View style={[styles.menuContainer, { transform: [{ translateX: menuAnimation }] }]}>
-                <SideMenu navigation={navigation} />
-            </Animated.View>
-        </View>
+        </TouchableWithoutFeedback>
     );
 };
 
