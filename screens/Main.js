@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Button, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, TextInput, Button, Alert, StyleSheet, Animated } from 'react-native';
 import MainStyle from '../style/MainStyle';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SideMenu from './SideMenu'; // 사이드 메뉴 컴포넌트 import
 
 const Main = () => {
     const [vehicles, setVehicles] = useState([]); // 차량 목록을 저장하는 상태
     const [searchQuery, setSearchQuery] = useState(''); // 검색 쿼리 상태
     const [filteredVehicles, setFilteredVehicles] = useState([]); // 필터링된 차량 목록
+    const [showMenu, setShowMenu] = useState(false); // 사이드 메뉴 표시 여부
+    const [menuAnimation] = useState(new Animated.Value(-300)); // 사이드 메뉴 애니메이션 값
     const navigation = useNavigation();
 
     // 차량 정보를 불러오는 함수
@@ -60,9 +63,24 @@ const Main = () => {
         }
     };
 
-    // 사이드 메뉴 화면으로 이동하는 함수
-    const navigateToSideMenu = () => {
-        navigation.navigate('SideMenu'); // 'SideMenu'는 이동할 화면의 이름입니다.
+    // 사이드 메뉴 표시/숨기기 함수
+    const toggleSideMenu = () => {
+        if (showMenu) {
+            // 메뉴를 닫을 때 애니메이션
+            Animated.timing(menuAnimation, {
+                toValue: -300, // 메뉴가 화면 밖으로 나가도록
+                duration: 300,
+                useNativeDriver: true,
+            }).start(() => setShowMenu(false));
+        } else {
+            // 메뉴를 열 때 애니메이션
+            setShowMenu(true);
+            Animated.timing(menuAnimation, {
+                toValue: 0, // 메뉴가 화면에 들어오도록
+                duration: 300,
+                useNativeDriver: true,
+            }).start();
+        }
     };
 
     return (
@@ -94,7 +112,7 @@ const Main = () => {
 
             {/* 검색 바 및 사이드 메뉴 버튼 */}
             <View style={MainStyle.searchBar}>
-                <Button title="=" onPress={navigateToSideMenu} />
+                <Button title="=" onPress={toggleSideMenu} />
                 <TextInput
                     style={MainStyle.searchInput}
                     placeholder="차량 번호 검색"
@@ -103,8 +121,41 @@ const Main = () => {
                 />
                 <Button title="검색" onPress={handleSearch} />
             </View>
+
+            {/* 사이드 메뉴 애니메이션 */}
+            <Animated.View style={[styles.menuContainer, { transform: [{ translateX: menuAnimation }] }]}>
+                <SideMenu navigation={navigation} />
+                <TouchableOpacity style={styles.closeButton} onPress={toggleSideMenu}>
+                    <Text style={styles.closeButtonText}>닫기</Text>
+                </TouchableOpacity>
+            </Animated.View>
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    menuContainer: {
+        position: 'absolute',
+        left: 0,
+        top: 0,
+        height: '110%', // 전체 높이
+        width: '66%', // 화면의 1/3 너비
+        backgroundColor: '#fff',
+        padding: 20,
+        elevation: 5, // 안드로이드에서 그림자 효과
+    },
+    closeButton: {
+        position: 'absolute',
+        top: 40,
+        right: 20,
+        backgroundColor: '#fff',
+        padding: 10,
+        borderRadius: 5,
+    },
+    closeButtonText: {
+        fontSize: 16,
+        color: '#007BFF',
+    },
+});
 
 export default Main;
