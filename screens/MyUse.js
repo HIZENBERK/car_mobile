@@ -143,8 +143,10 @@ const MyUsageScreen = ({ navigation }) => {
         };
 
    return (
-           <TouchableWithoutFeedback onPress={closeSideMenu}>
                <View style={{ flex: 1 }}>
+               <TouchableWithoutFeedback onPress={closeSideMenu}>
+                              <View style={{ flex: 0 }} />
+                          </TouchableWithoutFeedback>
                    <ScrollView style={[MainStyle.container, { flexGrow: 1 }]} contentContainerStyle={{ paddingBottom: 100 }}>
                        {/* 날짜 선택 및 조회 기준 텍스트 */}
                        <View style={MainStyle.dateContainer}>
@@ -223,7 +225,6 @@ const MyUsageScreen = ({ navigation }) => {
                        <Button title="검색" onPress={() => { /* 검색 기능 구현 */ }} />
                    </View>
                </View>
-           </TouchableWithoutFeedback>
         );
     };
 
