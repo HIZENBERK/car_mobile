@@ -1,12 +1,9 @@
-
 import { StyleSheet } from 'react-native';
-
 
 const MainStyles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'top',
-        alignItems: 'center',
+        padding: 20,
         backgroundColor: '#f5f5f5',
     },
     title: {
@@ -55,11 +52,9 @@ const MainStyles = StyleSheet.create({
     sideMenuButton: {
         alignSelf: 'center',
         marginTop: 20,
-        justifyContent:'bottom',
     },
     sideMenuText: {
         color: '#333',
-        justifyContent: 'bottom',
     },
     searchBar: {
         flexDirection: 'row',
@@ -78,6 +73,43 @@ const MainStyles = StyleSheet.create({
         flex: 1,
         fontSize: 16,
         padding: 8,
+        marginRight: 10,
+    },
+    header: {
+        flexDirection: 'column', // 수직 정렬
+        marginBottom: 10,
+    },
+    dateWrapper: {
+        flexDirection: 'column', // 수직 정렬
+        backgroundColor: '#e6f7ff',
+        borderRadius: 8,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#007BFF',
+        marginBottom: 10,
+    },
+    dateContainer: {
+        flexDirection: 'row', // 수평 정렬
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 10,
+    },
+    dateButton: {
+        flex: 1,
+        padding: 12,
+        backgroundColor: '#e6f7ff',
+        borderRadius: 8,
+        marginHorizontal: 5,
+        alignItems: 'center',
+    },
+    dateText: {
+        fontSize: 16,
+        color: '#000',
+        textAlign: 'center',
+    },
+    queryText: {
+        fontSize: 16,
+        color: '#000',
         marginRight: 10,
     },
 });

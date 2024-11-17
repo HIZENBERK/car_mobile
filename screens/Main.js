@@ -33,8 +33,8 @@ const Main = () => {
                 const data = await response.json();
                 console.log('차량 정보:', data); // 데이터 형식 확인을 위해 콘솔에 출력
                 if (data && Array.isArray(data.vehicles)) {
-                    setVehicles(data.vehicles); // vehicles 속성을 사용하여 차량 정보 설정
-                    setFilteredVehicles(data.vehicles); // 초기 필터링된 차량 정보 설정
+                    setVehicles(data.vehicles);
+                    setFilteredVehicles(data.vehicles);
                 } else {
                     Alert.alert("오류", "차량 정보를 불러오는 데 실패했습니다. 데이터 형식이 올바르지 않습니다.");
                 }
@@ -55,7 +55,7 @@ const Main = () => {
     // 차량 번호 검색 함수
     const handleSearch = () => {
         if (searchQuery.trim() === '') {
-            setFilteredVehicles(vehicles); // 검색어가 비어있으면 전체 차량 목록 표시
+            setFilteredVehicles(vehicles);
         } else {
             const filtered = vehicles.filter(vehicle =>
                 vehicle.license_plate_number.includes(searchQuery)
@@ -64,9 +64,14 @@ const Main = () => {
         }
     };
 
+    // 사이드 메뉴 화면으로 이동하는 함수
+    const navigateToSideMenu = () => {
+        navigation.navigate('SideMenu'); // 'SideMenu'는 이동할 화면의 이름입니다.
+    };
+
     return (
         <View style={MainStyle.container}>
-            {/* Car Information List */}
+            {/* 차량 정보 목록 */}
             <View style={MainStyle.carInfoList}>
                 {filteredVehicles.length > 0 ? (
                     filteredVehicles.map((vehicle, index) => (
@@ -95,8 +100,9 @@ const Main = () => {
             <Button title="운행기록부 생성" onPress={() => navigation.navigate('MakeExcel')} />
             <Button title="영수증 등록" onPress={() => navigation.navigate('ReceiptRegistration')} />
             {/* Bottom Search Bar */}
+            {/* 검색 바 및 사이드 메뉴 버튼 */}
             <View style={MainStyle.searchBar}>
-                <Button title="-" onPress={() => {}} />
+                <Button title="=" onPress={navigateToSideMenu} />
                 <TextInput
                     style={MainStyle.searchInput}
                     placeholder="차량 번호 검색"
@@ -110,4 +116,3 @@ const Main = () => {
 };
 
 export default Main;
-// 11/16 10:28 운행기록 api 연결 직전
