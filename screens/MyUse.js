@@ -187,7 +187,7 @@ const MyUsageScreen = ({ navigation }) => {
                        )}
 
                        {/* 운행 기록 리스트 */}
-                       <ScrollView style={[MainStyle.recordsContainer, { marginBottom: 80 }]} contentContainerStyle={{ paddingBottom: 50 }}>
+                        <View style={[MainStyle.recordsContainer, { marginBottom: 80 }]}>
                            {drivingRecords.length > 0 ? (
                                drivingRecords.map((record, index) => (
                                    <View key={index} style={[MainStyle.recordItem, { padding: 10, margin: 10, borderWidth: 1, borderRadius: 5, borderColor: '#ccc' }]}>
@@ -203,7 +203,7 @@ const MyUsageScreen = ({ navigation }) => {
                            ) : (
                                <Text style={MainStyle.noRecordsText}>등록된 운행 기록이 없습니다.</Text>
                            )}
-                       </ScrollView>
+                       </View>
                    </ScrollView>
 
                    {/* 사이드 메뉴 */}
