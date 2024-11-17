@@ -117,9 +117,6 @@ const Main = () => {
                     )}
                 </View>
 
-                <Button title="운행기록부 생성" onPress={() => navigation.navigate('MakeExcel')} />
-                <Button title="영수증 등록" onPress={() => navigation.navigate('ReceiptRegistration')} />
-
                 <View style={MainStyle.searchBar}>
                     <Button title="=" onPress={toggleSideMenu} />
                     <TextInput

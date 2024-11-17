@@ -8,7 +8,14 @@ const MakeExcelStyle = StyleSheet.create({
     searchBar: { flexDirection: 'row', marginVertical: 10 },
     input: { flex: 1, borderColor: '#ccc', borderWidth: 1, marginRight: 10, padding: 5 },
     item: { flexDirection: 'row', justifyContent: 'space-between', marginVertical: 5 },
-    footer: { marginTop: 10 },
+    footer: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        marginTop: 10
+    },
+    buttonSpacing: {
+        marginLeft: 10, // 버튼 간격 조정
+    },
 });
 
 export default MakeExcelStyle;

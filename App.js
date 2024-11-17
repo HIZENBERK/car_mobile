@@ -33,9 +33,9 @@ function App() {
               {/* SideMenu 화면 추가 */}
               <Stack.Screen name="SideMenu" component={SideMenu} options={{ title: '사이드 메뉴' }} />
               {/* UseCar 화면 */}
-              <Stack.Screen name="MakeExcel" component={MakeExcel} options={{ title: '차량 운행 기록부 생성' }} />
+              <Stack.Screen name="CurrentUsage" component={MakeExcel} options={{ title: '차량 운행 기록부 생성' }} />
               {/* UseCar 화면 */}
-              <Stack.Screen name="ReceiptRegistration" component={ReceiptRegistration} options={{ title: '영수증 등록' }} />
+              <Stack.Screen name="RegisterUsage" component={ReceiptRegistration} options={{ title: '영수증 등록' }} />
             </Stack.Navigator>
 
           ) : (

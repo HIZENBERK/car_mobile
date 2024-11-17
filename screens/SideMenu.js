@@ -14,11 +14,11 @@ const SideMenu = ({ navigation }) => {
             </TouchableOpacity>
             <View style={styles.separator} />
             <TouchableOpacity onPress={() => navigation.navigate('CurrentUsage')} style={styles.menuItem}>
-                <Text style={styles.itemText}>현재 운행기록 생성</Text>
+                <Text style={styles.itemText}>차량 운행기록부 생성</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
             <TouchableOpacity onPress={() => navigation.navigate('RegisterUsage')} style={styles.menuItem}>
-                <Text style={styles.itemText}>운행 등록</Text>
+                <Text style={styles.itemText}>영수증 등록</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
             <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.menuItem}>
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff',
         padding: 20,
-        width: '100%', // 화면의 2/3 너비로 조정
+        width: '120%', // 화면의 2/3 너비로 조정
         position: 'absolute',
         left: 0,
         top: 0,
