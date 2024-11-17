@@ -16,12 +16,14 @@ const Main = () => {
     // 차량 정보를 불러오는 함수
     const fetchVehicles = async () => {
         try {
+            // AsyncStorage에서 토큰 가져오기
             const token = await AsyncStorage.getItem('access'); // 저장된 access 토큰 가져오기
             if (!token) {
                 Alert.alert("오류", "로그인 토큰이 없습니다. 다시 로그인해 주세요.");
                 return;
             }
 
+            // 차량 정보 요청
             const response = await fetch('https://hizenberk.pythonanywhere.com/api/vehicles/', {
                 method: 'GET',
                 headers: {
@@ -32,6 +34,7 @@ const Main = () => {
 
             if (response.ok) {
                 const data = await response.json();
+                console.log('차량 정보:', data); // 데이터 형식 확인을 위해 콘솔에 출력
                 if (data && Array.isArray(data.vehicles)) {
                     setVehicles(data.vehicles);
                     setFilteredVehicles(data.vehicles);
@@ -47,10 +50,12 @@ const Main = () => {
         }
     };
 
+    // 컴포넌트가 마운트될 때 차량 정보를 불러오기 위해 호출
     useEffect(() => {
         fetchVehicles();
     }, []);
 
+    // 차량 번호 검색 함수
     const handleSearch = () => {
         if (searchQuery.trim() === '') {
             setFilteredVehicles(vehicles);
