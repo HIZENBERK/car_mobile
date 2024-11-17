@@ -13,7 +13,6 @@ import MyUse from './screens/MyUse'; // MyUse로 수정
 import Setting from './screens/Setting'; // Setting 화면 추가
 import ChangePassword from './screens/ChangePassword';
 import Notice from './screens/Notice';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -40,7 +39,7 @@ function App() {
                   <Stack.Screen name="CurrentUsage" component={MakeExcel} options={{ title: '차량 운행 기록부 생성' }} />
                   {/* UseCar 화면 */}
                   <Stack.Screen name="RegisterUsage" component={ReceiptRegistration} options={{ title: '영수증 등록' }} />
-                  <Stack.Screen name="Setting" component={Setting} options={{ title: '설정' }} />
+                  <Stack.Screen name="Settings" component={Setting} options={{ title: '설정' }} />
                   <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ title: '설정' }}/>
                   <Stack.Screen name="Notice" component={Notice} options={{ title: '공지사항' }}/>
                 </Stack.Navigator>
