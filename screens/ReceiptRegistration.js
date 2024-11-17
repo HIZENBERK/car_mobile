@@ -1,10 +1,13 @@
 import React from 'react';
-import { View, Text, TextInput, TouchableOpacity} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet } from 'react-native';
 import ReceiptRegistrationStyle from '../style/ReceiptRegistrationStyle';
 
 const ReceiptRegistration = () => {
     return (
-        <View style={ReceiptRegistrationStyle.container}>
+        <ScrollView
+            style={ReceiptRegistrationStyle.container}
+            contentContainerStyle={styles.scrollContainer} // 스크롤 컨테이너 스타일 추가
+        >
             {/* Header */}
             <View style={ReceiptRegistrationStyle.header}>
                 <Text style={ReceiptRegistrationStyle.headerTitle}>영수증 등록</Text>
@@ -45,8 +48,14 @@ const ReceiptRegistration = () => {
             <TouchableOpacity style={ReceiptRegistrationStyle.submitButton}>
                 <Text style={ReceiptRegistrationStyle.submitButtonText}>제출</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 };
+
+const styles = StyleSheet.create({
+    scrollContainer: {
+        paddingBottom: 50, // 스크롤을 100만큼 더 아래로 내리기
+    },
+});
 
 export default ReceiptRegistration;
