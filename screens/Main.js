@@ -13,14 +13,12 @@ const Main = () => {
     // 차량 정보를 불러오는 함수
     const fetchVehicles = async () => {
         try {
-            // AsyncStorage에서 토큰 가져오기
             const token = await AsyncStorage.getItem('access'); // 저장된 access 토큰 가져오기
             if (!token) {
                 Alert.alert("오류", "로그인 토큰이 없습니다. 다시 로그인해 주세요.");
                 return;
             }
 
-            // 차량 정보 요청
             const response = await fetch('https://hizenberk.pythonanywhere.com/api/vehicles/', {
                 method: 'GET',
                 headers: {
@@ -31,10 +29,9 @@ const Main = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('차량 정보:', data); // 데이터 형식 확인을 위해 콘솔에 출력
                 if (data && Array.isArray(data.vehicles)) {
-                    setVehicles(data.vehicles); // vehicles 속성을 사용하여 차량 정보 설정
-                    setFilteredVehicles(data.vehicles); // 초기 필터링된 차량 정보 설정
+                    setVehicles(data.vehicles);
+                    setFilteredVehicles(data.vehicles);
                 } else {
                     Alert.alert("오류", "차량 정보를 불러오는 데 실패했습니다. 데이터 형식이 올바르지 않습니다.");
                 }
@@ -47,7 +44,6 @@ const Main = () => {
         }
     };
 
-    // 컴포넌트가 마운트될 때 차량 정보를 불러오기 위해 호출
     useEffect(() => {
         fetchVehicles();
     }, []);
@@ -55,7 +51,7 @@ const Main = () => {
     // 차량 번호 검색 함수
     const handleSearch = () => {
         if (searchQuery.trim() === '') {
-            setFilteredVehicles(vehicles); // 검색어가 비어있으면 전체 차량 목록 표시
+            setFilteredVehicles(vehicles);
         } else {
             const filtered = vehicles.filter(vehicle =>
                 vehicle.license_plate_number.includes(searchQuery)
@@ -64,9 +60,14 @@ const Main = () => {
         }
     };
 
+    // 사이드 메뉴 화면으로 이동하는 함수
+    const navigateToSideMenu = () => {
+        navigation.navigate('SideMenu'); // 'SideMenu'는 이동할 화면의 이름입니다.
+    };
+
     return (
         <View style={MainStyle.container}>
-            {/* Car Information List */}
+            {/* 차량 정보 목록 */}
             <View style={MainStyle.carInfoList}>
                 {filteredVehicles.length > 0 ? (
                     filteredVehicles.map((vehicle, index) => (
@@ -91,9 +92,9 @@ const Main = () => {
                 )}
             </View>
 
-            {/* Bottom Search Bar */}
+            {/* 검색 바 및 사이드 메뉴 버튼 */}
             <View style={MainStyle.searchBar}>
-                <Button title="-" onPress={() => {}} />
+                <Button title="=" onPress={navigateToSideMenu} />
                 <TextInput
                     style={MainStyle.searchInput}
                     placeholder="차량 번호 검색"
@@ -107,4 +108,3 @@ const Main = () => {
 };
 
 export default Main;
-// 11/16 10:28 운행기록 api 연결 직전
