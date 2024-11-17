@@ -72,14 +72,15 @@ const Main = () => {
                     filteredVehicles.map((vehicle, index) => (
                         <View key={index} style={MainStyle.carInfoItem}>
                             <Text style={MainStyle.carText}>
-                                [법인]: {vehicle.license_plate_number}
+                                [법인] {vehicle.license_plate_number}
                             </Text>
                             <TouchableOpacity
                                 style={MainStyle.registrationButton}
                                 onPress={() => navigation.navigate('UseCar', {
                                         vehicleId: vehicle.id,
                                         licensePlateNumber: vehicle.license_plate_number,
-                                        totalMileage: vehicle.total_mileage
+                                        totalMileage: vehicle.total_mileage,
+                                        vehicleType: vehicle.vehicle_type
                                     })}
                             >
                                 <Text style={MainStyle.registrationButtonText}>사용 등록</Text>

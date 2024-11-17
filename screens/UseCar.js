@@ -17,7 +17,7 @@ const UseCar = () => {
     const [tollFee, setTollFee] = useState(''); // 통행료
     const [otherCosts, setOtherCosts] = useState(''); // 기타 비용
     const route = useRoute();
-    const { vehicleId, licensePlateNumber, totalMileage } = route.params; // 차량 ID를 가져옴
+    const { vehicleId, licensePlateNumber, totalMileage, vehicleType } = route.params; // 차량 ID를 가져옴
 
     const toggleDrivingStatus = async () => {
         if (isDriving) {
@@ -116,7 +116,7 @@ const UseCar = () => {
         <View style={UseCarStyle.container}>
             {/* 상단 차량 정보 및 주행거리 */}
             <View style={UseCarStyle.header}>
-                <Text style={UseCarStyle.carInfo}>차량 번호판: {licensePlateNumber}</Text>
+                <Text style={UseCarStyle.carInfo}>{vehicleType}[{licensePlateNumber}]</Text>
                 <Text style={UseCarStyle.distance}>누적 주행거리: {totalMileage}km</Text>
             </View>
 
