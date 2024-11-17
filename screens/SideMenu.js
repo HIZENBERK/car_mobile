@@ -18,7 +18,7 @@ const SideMenu = ({ navigation }) => {
             </TouchableOpacity>
             <View style={styles.separator} />
             <TouchableOpacity onPress={() => navigation.navigate('RegisterUsage')} style={styles.menuItem}>
-                <Text style={styles.itemText}>영수증 등록</Text>
+                <Text style={styles.itemText}>지출내역 조회</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
             <TouchableOpacity onPress={() => navigation.navigate('Settings')} style={styles.menuItem}>
