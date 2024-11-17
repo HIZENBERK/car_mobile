@@ -17,7 +17,7 @@ const SideMenu = ({ navigation }) => {
                 <Text style={styles.itemText}>차량 운행기록부 생성</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
-            <TouchableOpacity onPress={() => navigation.navigate('RegisterUsage')} style={styles.menuItem}>
+            <TouchableOpacity onPress={() => navigation.navigate('ExpenseRecord')} style={styles.menuItem}>
                 <Text style={styles.itemText}>지출내역 조회</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
@@ -25,9 +25,6 @@ const SideMenu = ({ navigation }) => {
                 <Text style={styles.itemText}>설정</Text>
             </TouchableOpacity>
             <View style={styles.separator} />
-            <TouchableOpacity onPress={() => {/* 로그아웃 기능 추가 */}} style={styles.logoutItem}>
-                <Text style={styles.itemText}>로그아웃</Text>
-            </TouchableOpacity>
         </View>
     );
 };

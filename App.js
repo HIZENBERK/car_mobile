@@ -38,7 +38,7 @@ function App() {
                   {/* UseCar 화면 */}
                   <Stack.Screen name="CurrentUsage" component={MakeExcel} options={{ title: '차량 운행 기록부 생성' }} />
                   {/* UseCar 화면 */}
-                  <Stack.Screen name="RegisterUsage" component={ReceiptRegistration} options={{ title: '영수증 등록' }} />
+                  <Stack.Screen name="ExpenseRecord" component={ReceiptRegistration} options={{ title: '영수증 등록' }} />
                   <Stack.Screen name="Settings" component={Setting} options={{ title: '설정' }} />
                   <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ title: '설정' }}/>
                   <Stack.Screen name="Notice" component={Notice} options={{ title: '공지사항' }}/>
