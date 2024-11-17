@@ -98,6 +98,14 @@ const Main = () => {
                 />
                 <Button title="검색" onPress={handleSearch} />
             </View>
+
+            {/* Temporary Button to navigate to Settings */}
+            <TouchableOpacity
+                style={MainStyle.settingsButton}
+                onPress={() => navigation.navigate('Setting')}
+            >
+                <Text style={MainStyle.settingsButtonText}>설정</Text>
+            </TouchableOpacity>
         </View>
     );
 };
