@@ -3,7 +3,6 @@ import { View, Text, TouchableOpacity, TextInput, Button, Alert } from 'react-na
 import MainStyle from '../style/MainStyle';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const Main = () => {
     const [vehicles, setVehicles] = useState([]); // 차량 목록을 저장하는 상태
     const [searchQuery, setSearchQuery] = useState(''); // 검색 쿼리 상태
@@ -36,14 +35,14 @@ const Main = () => {
                     setVehicles(data.vehicles); // vehicles 속성을 사용하여 차량 정보 설정
                     setFilteredVehicles(data.vehicles); // 초기 필터링된 차량 정보 설정
                 } else {
-                    Alert.alert("오류", "차량 정보를 불러오는 데 실패했습니다. 데이터 형식이 올바르지 않습니다.");
+                    Alert.alert('오류', '차량 정보를 불러오는 데 실패했습니다. 데이터 형식이 올바르지 않습니다.');
                 }
             } else {
-                Alert.alert("오류", "차량 정보를 불러오는 데 실패했습니다.");
+                Alert.alert('오류', '차량 정보를 불러오는 데 실패했습니다.');
             }
         } catch (error) {
             console.error(error);
-            Alert.alert("오류", "서버와의 연결에 실패했습니다.");
+            Alert.alert('오류', '서버와의 연결에 실패했습니다.');
         }
     };
 
@@ -66,7 +65,7 @@ const Main = () => {
 
     return (
         <View style={MainStyle.container}>
-            {/* Car Information List */}
+
             <View style={MainStyle.carInfoList}>
                 {filteredVehicles.length > 0 ? (
                     filteredVehicles.map((vehicle, index) => (
@@ -87,9 +86,11 @@ const Main = () => {
                 )}
             </View>
 
-            {/* Bottom Search Bar */}
+            <Button title="내 사용현황" onPress={() => navigation.navigate('MyUseHistory')} />
+            <Button title="차량 운행기록부 생성" onPress={() => navigation.navigate('MakeExcel')} />
+            <Button title="영수증 등록" onPress={() => navigation.navigate('ReceiptRegistration')} />
             <View style={MainStyle.searchBar}>
-                <Button title="-" onPress={() => {}} />
+                <Button title="-" onPress={() => navigation.openDrawer()} /> {/* 사이드바 열기 버튼 */}
                 <TextInput
                     style={MainStyle.searchInput}
                     placeholder="차량 번호 검색"

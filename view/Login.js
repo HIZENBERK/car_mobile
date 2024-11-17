@@ -3,7 +3,6 @@ import { View, Text, TextInput, Button } from 'react-native';
 import LoginStyles from '../style/LoginStyle'; // 스타일 파일 import
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage'; // AsyncStorage import 추가
-
 const Login = ({ onLogin }) => {
     const [emailOrPhone, setEmailOrPhone] = useState('');
     const [password, setPassword] = useState('');

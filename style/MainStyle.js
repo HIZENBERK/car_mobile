@@ -80,6 +80,15 @@ const MainStyles = StyleSheet.create({
         padding: 8,
         marginRight: 10,
     },
+    sidebar: {
+        flex: 1,
+        backgroundColor: '#e6e6e6',
+        padding: 16,
+    },
+    sidebarText: {
+        fontSize: 16,
+        marginVertical: 10,
+    },
 });
 
 export default MainStyles;

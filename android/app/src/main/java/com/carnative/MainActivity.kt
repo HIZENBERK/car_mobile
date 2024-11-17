@@ -24,4 +24,7 @@ class MainActivity : ReactActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(null)  // 여기서 null로 초기화하여 필요한 네이티브 모듈이 로드되도록 함
   }
+  override fun getJSIModulePackage(): JSIModulePackage {
+    return ReanimatedJSIModulePackage() // <-- 추가
+  }
 }
