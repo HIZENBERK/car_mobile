@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import MainStyle from '../style/MainStyle';
 import axios from 'axios';
 
-const ExpenseRecordScreen = () => {
+const ExpenseRecord = () => {
     const currentMonth = new Date();
     const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).toISOString().split('T')[0];
     const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).toISOString().split('T')[0];
@@ -157,4 +157,4 @@ const ExpenseRecordScreen = () => {
     );
 };
 
-export default ExpenseRecordScreen;
+export default ExpenseRecord;
