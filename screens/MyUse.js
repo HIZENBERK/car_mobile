@@ -142,11 +142,9 @@ const MyUsageScreen = ({ navigation }) => {
             }
         };
 
-   return (
-               <View style={{ flex: 1 }}>
-               <TouchableWithoutFeedback onPress={closeSideMenu}>
-                              <View style={{ flex: 0 }} />
-                          </TouchableWithoutFeedback>
+    return (
+           <View style={{ flex: 1 }}>
+               <View style={{ flex: 1 }} onTouchEnd={closeSideMenu}>
                    <ScrollView style={[MainStyle.container, { flexGrow: 1 }]} contentContainerStyle={{ paddingBottom: 100 }}>
                        {/* 날짜 선택 및 조회 기준 텍스트 */}
                        <View style={MainStyle.dateContainer}>
@@ -189,7 +187,7 @@ const MyUsageScreen = ({ navigation }) => {
                        )}
 
                        {/* 운행 기록 리스트 */}
-                        <View style={[MainStyle.recordsContainer, { marginBottom: 80 }]}>
+                       <View style={[MainStyle.recordsContainer, { marginBottom: 80 }]}>
                            {drivingRecords.length > 0 ? (
                                drivingRecords.map((record, index) => (
                                    <View key={index} style={[MainStyle.recordItem, { padding: 10, margin: 10, borderWidth: 1, borderRadius: 5, borderColor: '#ccc' }]}>
@@ -208,11 +206,6 @@ const MyUsageScreen = ({ navigation }) => {
                        </View>
                    </ScrollView>
 
-                   {/* 사이드 메뉴 */}
-                   <Animated.View style={[styles.menuContainer, { transform: [{ translateX: menuAnimation }] }]}>
-                       <SideMenu navigation={navigation} />
-                   </Animated.View>
-
                    {/* 검색 바 */}
                    <View style={[MainStyle.searchBar, { position: 'absolute', bottom: 0, left: 0, right: 0 }]}>
                        <Button title="=" onPress={toggleSideMenu} />
@@ -224,16 +217,22 @@ const MyUsageScreen = ({ navigation }) => {
                        />
                        <Button title="검색" onPress={() => { /* 검색 기능 구현 */ }} />
                    </View>
+
+                   {/* 사이드 메뉴 */}
+                   <Animated.View style={[styles.menuContainer, { transform: [{ translateX: menuAnimation }] }]}>
+                       <SideMenu navigation={navigation} />
+                   </Animated.View>
                </View>
-        );
-    };
+           </View>
+       );
+   };
 
     const styles = StyleSheet.create({
         menuContainer: {
             position: 'absolute',
             left: 0,
             top: 0,
-            height: '92%', // 전체 높이
+            height: '100%', // 전체 높이
             width: '66%', // 화면의 2/3 너비
             backgroundColor: '#fff',
             padding: 20,
