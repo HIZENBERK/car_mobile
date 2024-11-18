@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, TextInput, Alert } from 'react-native';
+import {View, Text, TouchableOpacity, TextInput, Alert, PermissionsAndroid, Platform, Modal} from 'react-native';
 import UseCarStyle from '../style/UseCarStyle';
 import { useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-
+import Geolocation from 'react-native-geolocation-service';
+import AddressSearch from '../component/AddressSearch';
 const UseCar = () => {
     const [isDriving, setIsDriving] = useState(false);
     const [drivingTime, setDrivingTime] = useState(0); // 운행 시간을 초 단위로 관리
@@ -16,9 +17,33 @@ const UseCar = () => {
     const [fuelCost, setFuelCost] = useState(''); // 유류비
     const [tollFee, setTollFee] = useState(''); // 통행료
     const [otherCosts, setOtherCosts] = useState(''); // 기타 비용
+    const [coordinates, setCoordinates] = useState('');
     const route = useRoute();
     const { vehicleId, licensePlateNumber, totalMileage, vehicleType } = route.params; // 차량 ID를 가져옴
+    const [isSearchModalVisible, setIsSearchModalVisible] = useState(false);
+    const [selectedInput, setSelectedInput] = useState(null);
 
+    const requestLocationPermission = async () => {
+        try {
+            if (Platform.OS === 'android') {
+                const granted = await PermissionsAndroid.request(
+                    PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+                    {
+                        title: '위치 권한 요청',
+                        message: '운행 기록을 위해 위치 접근 권한이 필요합니다.',
+                        buttonNeutral: '나중에',
+                        buttonNegative: '거부',
+                        buttonPositive: '허용',
+                    }
+                );
+                return granted === PermissionsAndroid.RESULTS.GRANTED;
+            }
+            return true;
+        } catch (err) {
+            console.warn(err);
+            return false;
+        }
+    };
     const toggleDrivingStatus = async () => {
         if (isDriving) {
             // 운행 종료
@@ -27,12 +52,36 @@ const UseCar = () => {
             setEndTime(new Date()); // 종료 시간을 현재 시간으로 설정
             await saveDrivingRecord(); // 운행 기록 저장
         } else {
+            const hasPermission = await requestLocationPermission();
+            if (!hasPermission) {
+                Alert.alert('권한 오류', '위치 접근 권한이 필요합니다.');
+                return;
+            }
             // 운행 시작
+
             setStartTime(new Date()); // 시작 시간을 현재 시간으로 설정
             setEndTime(null); // 종료 시간을 초기화
             setDrivingTime(0); // 운행 시간을 초기화
+            setCoordinates([]); // 좌표 초기화
             const id = setInterval(() => {
                 setDrivingTime((prevTime) => prevTime + 1);
+                Geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        setCoordinates((prevCoords) => [
+                            ...prevCoords,
+                            { latitude, longitude },
+                        ]);
+                    },
+                    (error) => {
+                        console.error('위치 정보 오류:', error);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 15000,
+                        maximumAge: 10000,
+                    }
+                );
             }, 1000); // 매 초마다 drivingTime을 1씩 증가
             setIntervalId(id); // 타이머 ID 저장
         }
@@ -47,6 +96,7 @@ const UseCar = () => {
                 return;
             }
 
+            console.log(coordinates);
             const recordData = {
                 vehicle: vehicleId,
                 departure_location: departureLocation,
@@ -59,7 +109,7 @@ const UseCar = () => {
                 fuel_cost: fuelCost ? parseFloat(fuelCost) : null,
                 toll_fee: tollFee ? parseFloat(tollFee) : null,
                 other_costs: otherCosts ? parseFloat(otherCosts) : null,
-                coordinates: [{ latitude: 37.7749, longitude: -122.4194 }], // 더미 좌표 데이터
+                coordinates: coordinates, // 저장된 좌표 데이터를 사용
             };
 
             const response = await axios.post('https://hizenberk.pythonanywhere.com/api/driving-records/create/', recordData, {
@@ -112,6 +162,17 @@ const UseCar = () => {
             .padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     };
 
+    const handleAddressSelect = (address) => {
+        if (selectedInput === 'departure') {
+            setDepartureLocation(address);
+        } else if (selectedInput === 'arrival') {
+            setArrivalLocation(address);
+        }
+        setIsSearchModalVisible(false);
+    };
+    const handleCloseModal = () => {
+        setIsSearchModalVisible(false);
+    };
     return (
         <View style={UseCarStyle.container}>
             {/* 상단 차량 정보 및 주행거리 */}
@@ -129,18 +190,25 @@ const UseCar = () => {
                     <Text> ~ </Text>
                     <Text style={UseCarStyle.timeInput}>종료 시간: {formatDate(endTime)}</Text>
                 </View>
-                <TextInput
+                <Text
+                style={UseCarStyle.textInput}
+                onPress={() => {
+                    setSelectedInput('departure');
+                    setIsSearchModalVisible(true);
+                }}
+                >
+                    {departureLocation || '출발지'}
+                </Text>
+                <Text
                     style={UseCarStyle.textInput}
-                    placeholder="출발지"
-                    value={departureLocation}
-                    onChangeText={setDepartureLocation}
-                />
-                <TextInput
-                    style={UseCarStyle.textInput}
-                    placeholder="도착지"
-                    value={arrivalLocation}
-                    onChangeText={setArrivalLocation}
-                />
+                    onPress={() => {
+                        setSelectedInput('arrival');
+                        setIsSearchModalVisible(true);
+                    }}
+                >
+                    {arrivalLocation || '도착지'}
+                </Text>
+
                 <TextInput
                     style={UseCarStyle.textInput}
                     placeholder="유류비"
@@ -181,7 +249,9 @@ const UseCar = () => {
                     </TouchableOpacity>
                 </View>
             </View>
-
+            <Modal visible={isSearchModalVisible} animationType="slide">
+                <AddressSearch visible={isSearchModalVisible} onSelectAddress={handleAddressSelect} onClose={handleCloseModal}/>
+            </Modal>
         </View>
     );
 };
