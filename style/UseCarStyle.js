@@ -58,10 +58,59 @@ const UseCarStyle = StyleSheet.create({
         alignItems: 'center',
         borderRadius: 10,
     },
+    smallButton: {
+        width: '10%', // 화면의 90% 차지
+        height: 350,
+        backgroundColor: '#a3b6f6', // 원하는 색상
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10,
+    },
     buttonText: {
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
+    },
+    modalBackground: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    modalContent: {
+        width: '80%',
+        padding: 20,
+        backgroundColor: 'white',
+        borderRadius: 10,
+        alignItems: 'center',
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 10,
+    },
+    radioGroup: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 10,
+    },
+    radioButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    radioCircle: {
+        height: 20,
+        width: 20,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: '#444',
+        marginRight: 10,
+    },
+    radioCircleSelected: {
+        backgroundColor: '#444',
+    },
+    radioLabel: {
+        fontSize: 16,
     },
 });
 
