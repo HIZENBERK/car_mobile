@@ -8,6 +8,7 @@ import UseCar from './screens/UseCar';
 import Setting from './screens/Setting'; // Setting 화면 추가
 import ChangePassword from './screens/ChangePassword';
 import Notice from './screens/Notice';
+import NoticeDetail from './screens/NoticeDetail';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 function App() {
@@ -31,6 +32,7 @@ function App() {
               <Stack.Screen name="Setting" component={Setting} options={{ title: '설정' }} />
               <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ title: '설정' }}/>
               <Stack.Screen name="Notice" component={Notice} options={{ title: '공지사항' }}/>
+              <Stack.Screen name="NoticeDetail" component={NoticeDetail} />
             </Stack.Navigator>
           ) : (
             // 로그인 화면
