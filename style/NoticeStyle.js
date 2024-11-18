@@ -46,6 +46,24 @@ const NoticeStyle = StyleSheet.create({
     fontSize: 16,
     color: '#ff0000',
   },
+
+  // 상세보기 스타일
+  noticeDetailTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 12,
+    color: '#333',
+  },
+  noticeDetailDate: {
+    fontSize: 14,
+    color: 'gray',
+    marginBottom: 16,
+  },
+  noticeDetailContent: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: '#333',
+  },
 });
 
 export default NoticeStyle;

@@ -1,13 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NoticeStyle from '../style/NoticeStyle';
+import { useNavigation } from '@react-navigation/native';
+
+// 날짜 포맷을 'YYYY-MM-DD' 형식으로 변환하는 함수
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const year = date.getFullYear();
+  const month = (`0${date.getMonth() + 1}`).slice(-2);  // 월을 2자리로
+  const day = (`0${date.getDate()}`).slice(-2);  // 일을 2자리로
+  return `${year}-${month}-${day}`;
+};
 
 const Notice = () => {
   const [notices, setNotices] = useState([]); // 공지사항 데이터를 저장
   const [loading, setLoading] = useState(true); // 로딩 상태
   const [error, setError] = useState(null); // 오류 상태
+  const navigation = useNavigation(); // 네비게이션 훅
 
   // 공지사항 정보를 불러오는 함수
   const fetchNotices = async () => {
@@ -69,17 +80,21 @@ const Notice = () => {
   return (
     <View style={NoticeStyle.container}>
 
-
       {/* 공지사항 목록 */}
       <FlatList
         data={notices}
         keyExtractor={(item) => item.id.toString()} // id로 고유 key 생성
         renderItem={({ item }) => (
-          <View style={NoticeStyle.noticeItem}>
+          <TouchableOpacity
+            style={NoticeStyle.noticeItem}
+            onPress={() => navigation.navigate('NoticeDetail', { noticeId: item.id })} // 상세보기 페이지로 이동
+          >
             <Text style={NoticeStyle.noticeTitle}>{item.title}</Text>
-            <Text style={NoticeStyle.noticeDate}>작성일: {item.created_at}</Text>
+            <Text style={NoticeStyle.noticeDate}>
+              작성일: {formatDate(item.created_at)} {/* 날짜 포맷 */}
+            </Text>
             <Text style={NoticeStyle.noticeAuthor}>작성자: {item.created_by__name}</Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
