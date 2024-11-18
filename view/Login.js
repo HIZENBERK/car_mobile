@@ -25,7 +25,7 @@ const Login = ({ onLogin }) => {
 
             // 서버로부터 받은 accessToken과 email, userId를 추출하여 AsyncStorage에 저장
             const { access } = response.data;
-            const { email, id } = response.data.user_info;  // user_info에서 email, id 추출
+            const { email, id,  department, name, position} = response.data.user_info;  // user_info에서 email, id,  department, name, position 추출
 
             if (!access) {
                 throw new Error('서버로부터 유효한 토큰을 받지 못했습니다.');
@@ -50,7 +50,27 @@ const Login = ({ onLogin }) => {
             } else {
                 console.warn('서버에서 userId 값을 받지 못했습니다.');
             }
-
+            // name 값이 있을 경우 AsyncStorage에 userId 저장
+            if (name) {
+                await AsyncStorage.setItem('name', name.toString());
+                console.log('name 저장 완료:', name);
+            } else {
+                console.warn('서버에서 name 값을 받지 못했습니다.');
+            }
+            // department 값이 있을 경우 AsyncStorage에 userId 저장
+            if (department) {
+                await AsyncStorage.setItem('department', department.toString());
+                console.log('department 저장 완료:', department);
+            } else {
+                console.warn('서버에서 department 값을 받지 못했습니다.');
+            }
+            // position 값이 있을 경우 AsyncStorage에 userId 저장
+            if (position) {
+                await AsyncStorage.setItem('position', position.toString());
+                console.log('position 저장 완료:', position);
+            } else {
+                console.warn('서버에서 position 값을 받지 못했습니다.');
+            }
             // onLogin 콜백 호출하여 로그인 후의 작업 진행
             onLogin();
         } catch (err) {

@@ -1,16 +1,37 @@
-import React, { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import SideMenuStyle from '../style/SideMenuStyle'; // 스타일 임포트
+import React, {useEffect, useState} from 'react';
+import {View, Text, TouchableOpacity, Alert} from 'react-native';
+import SideMenuStyle from '../style/SideMenuStyle';
+import AsyncStorage from '@react-native-async-storage/async-storage'; // 스타일 임포트
 
 const SideMenu = ({ navigation }) => {
     const [hoveredItem, setHoveredItem] = useState(null); // hover 상태 관리
+    const [department, setDepartment] = useState('');
+    const [name, setName] = useState('');
+    const [position, setPosition] = useState('');
 
+    const fetchUserInfo = async () => {
+        try {
+            // AsyncStorage에서 부서 가져오기
+            setDepartment(await AsyncStorage.getItem('department'));
+            // AsyncStorage에서 직급 가져오기
+            setPosition(await AsyncStorage.getItem('position'));
+            // AsyncStorage에서 이름 가져오기
+            setName(await AsyncStorage.getItem('name'));
+            console.log(department, position, name);
+        }catch (error){
+            console.error(error);
+            Alert.alert('오류', '저장에 실패한 정보가 있습니다.');
+        }
+    };
+    useEffect(() => {
+        fetchUserInfo();
+    }, []);
     return (
         <View style={SideMenuStyle.menuContainer}>
             <TouchableOpacity style={SideMenuStyle.closeButton} onPress={() => {/* 닫기 버튼 기능 추가 */}}>
             </TouchableOpacity>
-            <Text style={SideMenuStyle.menuTitle}>부서 / 직급</Text>
-            <Text style={SideMenuStyle.userName}>이름</Text>
+            <Text style={SideMenuStyle.menuTitle}>{`${department} / ${position}`}</Text>
+            <Text style={SideMenuStyle.userName}>{`${name}`}</Text>
             <View style={SideMenuStyle.separator} />
 
             {/* 메뉴 항목들 */}
