@@ -162,14 +162,13 @@ const MyUsageScreen = () => {
                     <View style={MainStyle.dateContainer}>
                         <Text style={MainStyle.queryText}>조회 기준:</Text>
                         <TouchableOpacity
-                            onPress={() => { setActiveCalendar('start'); setShowCalendar(true); }}
+                            onPress={() => { if (!showMenu) { setActiveCalendar('start'); setShowCalendar(true); }}}
                             style={MainStyle.dateButton}
                         >
                             <Text style={MainStyle.dateText}>{selectedDate.start || '시작 날짜 선택'}</Text>
                         </TouchableOpacity>
-                        <Text style={MainStyle.dateSeparator}> - </Text>
                         <TouchableOpacity
-                            onPress={() => { setActiveCalendar('end'); setShowCalendar(true); }}
+                            onPress={() => { if (!showMenu) { setActiveCalendar('end'); setShowCalendar(true); }}}
                             style={MainStyle.dateButton}
                         >
                             <Text style={MainStyle.dateText}>{selectedDate.end || '종료 날짜 선택'}</Text>
@@ -177,7 +176,7 @@ const MyUsageScreen = () => {
                     </View>
 
                     {/* 작은 달력 표시 */}
-                    {showCalendar && (
+                    {showCalendar && !showMenu && (
                         <Calendar
                             onDayPress={onDateSelect}
                             markedDates={{
