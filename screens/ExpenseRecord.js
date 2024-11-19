@@ -206,10 +206,10 @@ const ExpenseRecord = () => {
                                     }}
                                     style={[MainStyle.recordItem, { padding: 10, margin: 10, borderWidth: 1, borderRadius: 5, borderColor: '#ccc' }]}
                                 >
-                                    <Text style={{ fontWeight: 'bold' }}>지출 유형: {record.expense_type === 'expense' ? '지출' : '정비'}</Text>
-                                    <Text>차량 번호판: {record.vehicle_info?.license_plate_number || '정보 없음'}</Text>
-                                    <Text>차종: {record.vehicle_info?.vehicle_type || '정보 없음'}</Text>
-                                    <Text>사용자: {record.user_info?.name || '정보 없음'}</Text>
+                                    <Text style={{ fontWeight: 'bold' }}>지출 유형: {record.expense_type}</Text>
+                                    <Text>차량 번호판: {record.vehicle_info?.license_plate_number}</Text>
+                                    <Text>차종: {record.vehicle_info?.vehicle_type}</Text>
+                                    <Text>사용자: {record.user_info?.name}</Text>
                                     <Text>지출 일자: {record.expense_date}</Text>
                                     <Text>금액: {record.amount}원</Text>
                                     <Text>상태: {record.status}</Text>

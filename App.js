@@ -14,6 +14,8 @@ import ChangePassword from './screens/ChangePassword';
 import Notice from './screens/Notice';
 import ExpenseRecord from './screens/ExpenseRecord';
 import NoticeDetail from './screens/NoticeDetail';
+import Maintenance from './screens/Maintenance';
+import MaintenanceRegistration from './screens/MaintenanceRegistration';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -41,7 +43,10 @@ function App() {
           <Stack.Screen name="Notice" component={Notice} options={{ title: '공지사항' }} />
           <Stack.Screen name="ExpenseRecord" component={ExpenseRecord} options={{ title: '지출 내역 조회' }} />
           <Stack.Screen name="ReceiptRegistration" component={ReceiptRegistration} options={{ title: '지출 내역 영수증 등록 ' }} />
+          <Stack.Screen name="Maintenance" component={Maintenance} options={{ title: '정비 등록' }} />
+          <Stack.Screen name="MaintenanceRegistration" component={MaintenanceRegistration} />
           <Stack.Screen name="NoticeDetail" component={NoticeDetail} />
+
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

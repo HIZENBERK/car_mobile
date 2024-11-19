@@ -66,10 +66,10 @@ const SideMenu = ({ navigation, activeMenu, setActiveMenu }) => {
 
             <TouchableOpacity
                 onPress={() => {
-                    navigation.navigate('MaintenanceRegistration');
-                    setActiveMenu('MaintenanceRegistration'); // 활성 메뉴 변경
+                    navigation.navigate('Maintenance');
+                    setActiveMenu('Maintenance'); // 활성 메뉴 변경
                 }}
-                style={[SideMenuStyle.menuItem, activeMenu === 'MaintenanceRegistration' && SideMenuStyle.activeMenuItem]} // 활성화된 항목에 배경색 적용
+                style={[SideMenuStyle.menuItem, activeMenu === 'Maintenance' && SideMenuStyle.activeMenuItem]} // 활성화된 항목에 배경색 적용
             >
                 <Text style={SideMenuStyle.itemText}>정비 등록</Text>
             </TouchableOpacity>
