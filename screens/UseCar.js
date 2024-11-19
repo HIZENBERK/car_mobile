@@ -26,7 +26,7 @@ const UseCar = () => {
     const [isSearchModalVisible, setIsSearchModalVisible] = useState(false); //검색창 모달 열기 여부
     const [selectedInput, setSelectedInput] = useState(null); //어떤 차량에 대해서 저장하는지에 대한 변수
     const [isCostModalVisible, setIsCostModalVisible] = useState(false); // 비용 입력 모달 보이기 여부
-    const [drivingPurpose, setDrivingPurpose] = useState('출/퇴근'); // 기본 용도
+    const [drivingPurpose, setDrivingPurpose] = useState('commuting'); // 기본 용도
     const requestLocationPermission = async () => {
         try {
             if (Platform.OS === 'android') {
@@ -109,7 +109,7 @@ const UseCar = () => {
                 arrival_mileage: parseFloat(totalMileage) + 300, // 누적 주행거리값 + 500으로 설정 사실상 더미. 좌표 찍는걸 기반으로 운행된 km를 받아야함
                 departure_time: startTime,
                 arrival_time: new Date(),
-                driving_purpose: drivingPurpose, // 예시 값, 실제 값으로 대체 필요
+                driving_purpose: drivingPurpose,
                 fuel_cost: fuelCost ? parseFloat(fuelCost) : null,
                 toll_fee: tollFee ? parseFloat(tollFee) : null,
                 other_costs: otherCosts ? parseFloat(otherCosts) : null,
@@ -189,8 +189,8 @@ const UseCar = () => {
         setArrivalLocation(temp);
     };
     const handleCostSubmit = () => {
-        setIsCostModalVisible(false); // 모달 닫기
         saveDrivingRecord(); // 운행 기록 저장
+        setIsCostModalVisible(false); // 모달 닫기
     };
     return (
         <View style={UseCarStyle.container}>
@@ -213,9 +213,9 @@ const UseCar = () => {
                 {/* 라디오 버튼 */}
                 <View style={UseCarStyle.radioGroup}>
                     {[
-                        { label: '출/퇴근', value: '출/퇴근' },
-                        { label: '일반업무', value: '일반업무' },
-                        { label: '비업무', value: '비업무' },
+                        { label: '출/퇴근', value: 'commuting' },
+                        { label: '일반업무', value: 'business' },
+                        { label: '비업무', value: 'non_business' },
                     ].map((option) => (
                         <TouchableOpacity
                             key={option.value}
