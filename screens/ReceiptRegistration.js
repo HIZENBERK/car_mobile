@@ -25,19 +25,19 @@ const ReceiptRegistration = () => {
                 <Text>금액</Text>
                 <TextInput style={ReceiptRegistrationStyle.input} placeholder="금액 입력" />
 
-                <Text>결제방법</Text>
-                <TextInput style={ReceiptRegistrationStyle.input} placeholder="결제 방법 입력" />
+                <Text>결제 수단</Text>
+                <TextInput style={ReceiptRegistrationStyle.input} placeholder="결제 수단 입력" />
 
-                <Text>지출항목</Text>
+                <Text>지출 항목</Text>
                 <TextInput style={ReceiptRegistrationStyle.input} placeholder="지출 항목 입력" />
 
-                <Text>사용일자</Text>
+                <Text>사용 일자</Text>
                 <TextInput style={ReceiptRegistrationStyle.input} placeholder="사용 일자 입력" />
 
                 <Text>사용자</Text>
                 <TextInput style={ReceiptRegistrationStyle.input} placeholder="사용자 입력" />
 
-                <Text>사업자번호</Text>
+                <Text>사업자 번호</Text>
                 <TextInput style={ReceiptRegistrationStyle.input} placeholder="사업자 번호 입력" />
 
                 <Text>주소</Text>

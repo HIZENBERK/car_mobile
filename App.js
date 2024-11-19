@@ -46,6 +46,7 @@ function App() {
                   <Stack.Screen name="ChangePassword" component={ChangePassword} options={{ title: '설정' }}/>
                   <Stack.Screen name="Notice" component={Notice} options={{ title: '공지사항' }}/>
                   <Stack.Screen name="ExpenseRecord" component={ExpenseRecord} options={{ title: '지출 내역 조회' }} />
+                  <Stack.Screen name="ReceiptRegistration" component={ReceiptRegistration} options={{ title: '지출 내역 영수증 등록 ' }} />
                   <Stack.Screen name="NoticeDetail" component={NoticeDetail} />
                 </Stack.Navigator>
             ) : (
