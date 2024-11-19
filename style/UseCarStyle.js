@@ -59,8 +59,8 @@ const UseCarStyle = StyleSheet.create({
         borderRadius: 10,
     },
     smallButton: {
-        width: '10%', // 화면의 90% 차지
-        height: 350,
+        width: '90%', // 화면의 90% 차지
+        height: 50,
         backgroundColor: '#a3b6f6', // 원하는 색상
         justifyContent: 'center',
         alignItems: 'center',
