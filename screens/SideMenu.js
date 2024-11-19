@@ -71,6 +71,16 @@ const SideMenu = ({ navigation, activeMenu, setActiveMenu }) => {
                 <Text style={SideMenuStyle.itemText}>설정</Text>
             </TouchableOpacity>
             <View style={SideMenuStyle.separator} />
+                        <TouchableOpacity
+                            onPress={() => {
+                                navigation.navigate('Notice');
+                                setActiveMenu('Notice'); // 활성 메뉴 변경
+                            }}
+                            style={[SideMenuStyle.menuItem, activeMenu === 'Notice' && SideMenuStyle.activeMenuItem]} // 활성화된 항목에 배경색 적용
+                        >
+                            <Text style={SideMenuStyle.itemText}>공지사항</Text>
+                        </TouchableOpacity>
+            <View style={SideMenuStyle.separator} />
         </View>
     );
 };

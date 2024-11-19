@@ -92,13 +92,6 @@ const Setting = () => {
         <Text style={SettingStyle.buttonText}>비밀번호 변경</Text>
       </TouchableOpacity>
 
-      {/* 공지사항 버튼 */}
-      <TouchableOpacity
-        style={SettingStyle.fullWidthButton}
-        onPress={() => navigation.navigate('Notice')}>
-        <Text style={SettingStyle.buttonText}>공지사항</Text>
-      </TouchableOpacity>
-
       {/* 로그아웃 버튼 */}
       <TouchableOpacity
         style={[SettingStyle.fullWidthButton, SettingStyle.logoutButton]}
