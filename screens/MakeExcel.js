@@ -8,17 +8,16 @@ const MakeExcel = () => {
     const navigation = useNavigation(); // navigation 객체 받기
     const [showMenu, setShowMenu] = useState(false); // 사이드 메뉴 표시 여부
     const [menuAnimation] = useState(new Animated.Value(-300)); // 사이드 메뉴 애니메이션 값
+    const [activeMenu, setActiveMenu] = useState('makeExcel'); // 현재 활성화된 메뉴 항목 추가
 
     const toggleSideMenu = () => {
         if (showMenu) {
-            // 메뉴 닫기
             Animated.timing(menuAnimation, {
                 toValue: -300, // 메뉴가 화면 밖으로 나가도록
                 duration: 300,
                 useNativeDriver: true,
             }).start(() => setShowMenu(false));
         } else {
-            // 메뉴 열기
             setShowMenu(true);
             Animated.timing(menuAnimation, {
                 toValue: 0, // 메뉴가 화면에 들어오도록
@@ -84,7 +83,11 @@ const MakeExcel = () => {
 
                 {/* 사이드 메뉴 */}
                 <Animated.View style={[styles.menuContainer, { transform: [{ translateX: menuAnimation }] }]}>
-                    <SideMenu navigation={navigation} />
+                    <SideMenu
+                        navigation={navigation}
+                        activeMenu={activeMenu}
+                        setActiveMenu={setActiveMenu} // 활성 메뉴 업데이트 함수 전달
+                    />
                 </Animated.View>
             </View>
         </TouchableWithoutFeedback>
