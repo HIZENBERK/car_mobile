@@ -41,6 +41,7 @@ const SideMenu = ({ navigation, activeMenu, setActiveMenu }) => {
                 <Text style={SideMenuStyle.itemText}>내 사용 현황</Text>
             </TouchableOpacity>
             <View style={SideMenuStyle.separator} />
+
             <TouchableOpacity
                 onPress={() => {
                     navigation.navigate('CurrentUsage');
@@ -51,6 +52,7 @@ const SideMenu = ({ navigation, activeMenu, setActiveMenu }) => {
                 <Text style={SideMenuStyle.itemText}>차량 운행기록부 생성</Text>
             </TouchableOpacity>
             <View style={SideMenuStyle.separator} />
+
             <TouchableOpacity
                 onPress={() => {
                     navigation.navigate('ExpenseRecord');
@@ -61,6 +63,29 @@ const SideMenu = ({ navigation, activeMenu, setActiveMenu }) => {
                 <Text style={SideMenuStyle.itemText}>지출내역 조회</Text>
             </TouchableOpacity>
             <View style={SideMenuStyle.separator} />
+
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate('MaintenanceRegistration');
+                    setActiveMenu('MaintenanceRegistration'); // 활성 메뉴 변경
+                }}
+                style={[SideMenuStyle.menuItem, activeMenu === 'MaintenanceRegistration' && SideMenuStyle.activeMenuItem]} // 활성화된 항목에 배경색 적용
+            >
+                <Text style={SideMenuStyle.itemText}>정비 등록</Text>
+            </TouchableOpacity>
+        <View style={SideMenuStyle.separator} />
+
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate('Notice');
+                    setActiveMenu('Notice'); // 활성 메뉴 변경
+                }}
+                style={[SideMenuStyle.menuItem, activeMenu === 'Notice' && SideMenuStyle.activeMenuItem]} // 활성화된 항목에 배경색 적용
+            >
+                <Text style={SideMenuStyle.itemText}>공지사항</Text>
+            </TouchableOpacity>
+        <View style={SideMenuStyle.separator} />
+
             <TouchableOpacity
                 onPress={() => {
                     navigation.navigate('Settings');
@@ -71,16 +96,7 @@ const SideMenu = ({ navigation, activeMenu, setActiveMenu }) => {
                 <Text style={SideMenuStyle.itemText}>설정</Text>
             </TouchableOpacity>
             <View style={SideMenuStyle.separator} />
-                        <TouchableOpacity
-                            onPress={() => {
-                                navigation.navigate('Notice');
-                                setActiveMenu('Notice'); // 활성 메뉴 변경
-                            }}
-                            style={[SideMenuStyle.menuItem, activeMenu === 'Notice' && SideMenuStyle.activeMenuItem]} // 활성화된 항목에 배경색 적용
-                        >
-                            <Text style={SideMenuStyle.itemText}>공지사항</Text>
-                        </TouchableOpacity>
-            <View style={SideMenuStyle.separator} />
+
         </View>
     );
 };
