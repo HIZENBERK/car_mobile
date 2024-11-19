@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, TextInput, Button, Alert, StyleSheet, Animated, TouchableWithoutFeedback } from 'react-native';
 import MainStyle from '../style/MainStyle';
+import axios from 'axios'; // axios 임포트
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SideMenu from './SideMenu'; // 사이드 메뉴 컴포넌트 import
@@ -13,6 +14,11 @@ const Main = () => {
     const [menuAnimation] = useState(new Animated.Value(-300)); // 사이드 메뉴 애니메이션 값
     const [activeMenu, setActiveMenu] = useState(null); // 활성 메뉴 상태 추가
     const navigation = useNavigation();
+
+    // 공지사항 상태 추가
+    const [notices, setNotices] = useState([]); // 공지사항 데이터를 저장
+    const [loadingNotices, setLoadingNotices] = useState(true); // 로딩 상태
+    const [errorNotices, setErrorNotices] = useState(null); // 오류 상태
 
     // 차량 정보를 불러오는 함수
     const fetchVehicles = async () => {
@@ -51,10 +57,41 @@ const Main = () => {
         }
     };
 
-    // 컴포넌트가 마운트될 때 차량 정보를 불러오기 위해 호출
-    useEffect(() => {
-        fetchVehicles();
-    }, []);
+    // 공지사항 정보를 불러오는 함수
+        const fetchNotices = async () => {
+            try {
+                const token = await AsyncStorage.getItem('access');
+                if (!token) {
+                    Alert.alert('인증 오류', '로그인이 필요합니다.');
+                    return;
+                }
+
+                const response = await axios.get('https://hizenberk.pythonanywhere.com/api/notices/all/', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+                if (response.data && response.data.notices) {
+                    setNotices(response.data.notices); // 공지사항 데이터 설정
+                    const notices = response.data.notices.map(notice => `${notice.title} (작성일: ${notice.created_at})`).join('\n');
+                    Alert.alert('공지사항', notices, [{ text: '확인' }]);
+                } else {
+                    setErrorNotices('공지사항 데이터가 없습니다.');
+                }
+            } catch (err) {
+                console.error('공지사항 불러오기 실패:', err.message);
+                setErrorNotices('공지사항을 불러오지 못했습니다.');
+            } finally {
+                setLoadingNotices(false); // 로딩 종료
+            }
+        };
+
+        // 컴포넌트가 마운트될 때 차량 정보와 공지사항 정보를 불러오기 위해 호출
+        useEffect(() => {
+            fetchVehicles();
+            fetchNotices();
+        }, []);
 
     // 차량 번호 검색 함수
     const handleSearch = () => {
