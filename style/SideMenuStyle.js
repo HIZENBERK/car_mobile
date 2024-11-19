@@ -39,6 +39,9 @@ const SideMenuStyle = StyleSheet.create({
         fontSize: 18,
         textAlign: 'left',
         paddingLeft: 5, // 오른쪽으로 5px 이동
+    },
+    activeMenuItem: {
+        backgroundColor: '#B0E0E6', // 활성화된 메뉴 항목의 색상
     }
 });
 
