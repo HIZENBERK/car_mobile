@@ -9,6 +9,7 @@ import SideMenu from './SideMenu';
 
 const ExpenseRecord = () => {
     const [showMenu, setShowMenu] = useState(false);
+    const [activeMenu, setActiveMenu] = useState('expenseRecord');
     const currentMonth = new Date();
     const startOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).toISOString().split('T')[0];
     const endOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).toISOString().split('T')[0];
@@ -230,7 +231,7 @@ const ExpenseRecord = () => {
 
               {/* 사이드 메뉴 */}
               <Animated.View style={[styles.menuContainer, { transform: [{ translateX: menuAnimation }] }]}>
-                <SideMenu navigation={useNavigation()} />
+                <SideMenu navigation={useNavigation()} activeMenu={activeMenu} setActiveMenu={setActiveMenu} />
               </Animated.View>
             </View>
           </TouchableWithoutFeedback>

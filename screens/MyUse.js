@@ -16,6 +16,7 @@ const MyUsageScreen = () => {
     const [selectedDate, setSelectedDate] = useState({ start: startOfMonth, end: endOfMonth });
     const [searchQuery, setSearchQuery] = useState(''); // 검색 쿼리
     const [showCalendar, setShowCalendar] = useState(false); // 달력 표시 여부
+    const [activeMenu, setActiveMenu] = useState('myUsage'); // 현재 활성화된 메뉴 항목 추가
     const [activeCalendar, setActiveCalendar] = useState(null); // 어떤 달력이 활성화되었는지
     const [drivingRecords, setDrivingRecords] = useState([]); // 운행 기록 상태
     const [menuAnimation] = useState(new Animated.Value(-300)); // 사이드 메뉴 애니메이션 값
@@ -126,21 +127,27 @@ const MyUsageScreen = () => {
     };
 
     const toggleSideMenu = () => {
-        if (showMenu) {
-            Animated.timing(menuAnimation, {
-                toValue: -300,
-                duration: 300,
-                useNativeDriver: true,
-            }).start(() => setShowMenu(false));
-        } else {
-            setShowMenu(true);
-            Animated.timing(menuAnimation, {
-                toValue: 0,
-                duration: 300,
-                useNativeDriver: true,
-            }).start();
-        }
-    };
+            if (showMenu) {
+                closeSideMenu();
+            } else {
+                setShowMenu(true);
+                Animated.timing(menuAnimation, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                }).start();
+            }
+        };
+
+        const closeSideMenu = () => {
+            if (showMenu) {
+                Animated.timing(menuAnimation, {
+                    toValue: -300,
+                    duration: 300,
+                    useNativeDriver: true,
+                }).start(() => setShowMenu(false));
+            }
+        };
 
     return (
         <View style={{ flex: 1 }}>
@@ -225,7 +232,11 @@ const MyUsageScreen = () => {
 
                     {/* 사이드 메뉴 */}
                     <Animated.View style={[styles.menuContainer, { transform: [{ translateX: menuAnimation }] }]}>
-                        <SideMenu navigation={useNavigation()} />
+                        <SideMenu
+                        navigation={navigation}
+                        activeMenu={activeMenu}
+                        setActiveMenu={setActiveMenu} // 올바르게 전달
+                    />
                     </Animated.View>
                 </View>
             </TouchableWithoutFeedback>
