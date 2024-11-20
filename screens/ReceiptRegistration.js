@@ -34,6 +34,7 @@ const ReceiptRegistration = () => {
         const options = {
             mediaType: 'photo',
             quality: 1,
+            saveToPhotos: true, // 사진을 갤러리에 저장
         };
 
         launchCamera(options, (response) => {
@@ -68,7 +69,7 @@ const ReceiptRegistration = () => {
             formData.append('receipt_detail', {
                 uri: selectedFile.uri,
                 name: selectedFile.name,
-                type: selectedFile.type || 'application/octet-stream', // 기본 MIME 타입 추가
+                type: selectedFile.type || 'application/octet-stream',
             });
 
             const response = await axios.patch(
@@ -83,59 +84,59 @@ const ReceiptRegistration = () => {
             );
 
             if (response.status === 200) {
-                Alert.alert('성공', '영수증이 성공적으로 업로드되었습니다.');
-                console.log('업로드된 지출 내역 정보:', response.data);
-                navigation.goBack();
-            } else {
-                Alert.alert('오류', '영수증 업로드에 실패했습니다.');
-            }
-        } catch (error) {
-            if (error.response) {
-                console.error('서버 응답 데이터:', error.response.data);
-                Alert.alert('오류', `업로드 중 오류 발생: ${JSON.stringify(error.response.data)}`);
-            } else {
-                console.error('영수증 업로드 오류:', error);
-                Alert.alert('오류', '영수증 업로드 중 알 수 없는 오류가 발생했습니다.');
-            }
-        }
-    };
+                            Alert.alert('성공', '영수증이 성공적으로 업로드되었습니다.');
+                            console.log('업로드된 지출 내역 정보:', response.data);
+                            navigation.goBack();
+                        } else {
+                            Alert.alert('오류', '영수증 업로드에 실패했습니다.');
+                        }
+                    } catch (error) {
+                        if (error.response) {
+                            console.error('서버 응답 데이터:', error.response.data);
+                            Alert.alert('오류', `업로드 중 오류 발생: ${JSON.stringify(error.response.data)}`);
+                        } else {
+                            console.error('영수증 업로드 오류:', error);
+                            Alert.alert('오류', '영수증 업로드 중 알 수 없는 오류가 발생했습니다.');
+                        }
+                    }
+                };
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.label}>영수증 업로드</Text>
-            <Button title="파일 선택" onPress={selectFile} />
-            <Button title="사진 찍기" onPress={takePhoto} />
-            {selectedFile && (
-                <>
-                    <Text style={styles.fileName}>
-                        선택된 파일: {selectedFile.name}
-                    </Text>
-                    <Image
-                        source={{ uri: selectedFile.uri }}
-                        style={{ width: 100, height: 100, marginTop: 10 }}
-                    />
-                </>
-            )}
-            <Button title="업로드" onPress={uploadReceipt} />
-        </View>
-    );
-};
+                return (
+                    <View style={styles.container}>
+                        <Text style={styles.label}>영수증 업로드</Text>
+                        <Button title="파일 선택" onPress={selectFile} />
+                        <Button title="사진 찍기" onPress={takePhoto} />
+                        {selectedFile && (
+                            <>
+                                <Text style={styles.fileName}>
+                                    선택된 파일: {selectedFile.name}
+                                </Text>
+                                <Image
+                                    source={{ uri: selectedFile.uri }}
+                                    style={{ width: 100, height: 100, marginTop: 10 }}
+                                />
+                            </>
+                        )}
+                        <Button title="업로드" onPress={uploadReceipt} />
+                    </View>
+                );
+            };
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-    },
-    label: {
-        fontSize: 16,
-        marginBottom: 8,
-    },
-    fileName: {
-        marginTop: 10,
-        fontSize: 14,
-        color: '#333',
-    },
-});
+            const styles = StyleSheet.create({
+                container: {
+                    flex: 1,
+                    padding: 20,
+                    backgroundColor: '#fff',
+                },
+                label: {
+                    fontSize: 16,
+                    marginBottom: 8,
+                },
+                fileName: {
+                    marginTop: 10,
+                    fontSize: 14,
+                    color: '#333',
+                },
+            });
 
-export default ReceiptRegistration;
+            export default ReceiptRegistration;
