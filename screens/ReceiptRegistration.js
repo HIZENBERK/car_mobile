@@ -1,25 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, Button, Alert, StyleSheet } from 'react-native';
+import { View, Text, Button, Alert, StyleSheet, Image } from 'react-native';
 import DocumentPicker from 'react-native-document-picker';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRoute, useNavigation } from '@react-navigation/native';
+import { launchCamera } from 'react-native-image-picker';
 
 const ReceiptRegistration = () => {
     const route = useRoute();
     const navigation = useNavigation();
-    const { recordId } = route.params; // 선택한 지출 내역의 ID
+    const { recordId } = route.params;
 
     const [selectedFile, setSelectedFile] = useState(null);
 
-    console.log("불러온 지출 내역 정보:", recordId);
-    // 파일 선택 함수
     const selectFile = async () => {
         try {
             const result = await DocumentPicker.pick({
-                type: [DocumentPicker.types.images], // 이미지 파일만 선택
+                type: [DocumentPicker.types.images],
             });
-            setSelectedFile(result[0]); // 선택한 첫 번째 파일
+            setSelectedFile(result[0]);
             Alert.alert('파일 선택 완료', `파일 이름: ${result[0].name}`);
         } catch (err) {
             if (DocumentPicker.isCancel(err)) {
@@ -31,7 +30,26 @@ const ReceiptRegistration = () => {
         }
     };
 
-    // 영수증 파일 업로드 함수
+    const takePhoto = async () => {
+        const options = {
+            mediaType: 'photo',
+            quality: 1,
+        };
+
+        launchCamera(options, (response) => {
+            if (response.didCancel) {
+                Alert.alert('취소됨', '사진 촬영이 취소되었습니다.');
+            } else if (response.error) {
+                console.error('카메라 오류:', response.error);
+                Alert.alert('오류', '사진 촬영 중 오류가 발생했습니다.');
+            } else if (response.assets && response.assets.length > 0) {
+                const source = response.assets[0];
+                setSelectedFile(source);
+                Alert.alert('사진 촬영 완료', `사진 이름: ${source.fileName}`);
+            }
+        });
+    };
+
     const uploadReceipt = async () => {
         if (!selectedFile) {
             Alert.alert('오류', '업로드할 파일을 선택하세요.');
@@ -50,7 +68,7 @@ const ReceiptRegistration = () => {
             formData.append('receipt_detail', {
                 uri: selectedFile.uri,
                 name: selectedFile.name,
-                type: selectedFile.type,
+                type: selectedFile.type || 'application/octet-stream', // 기본 MIME 타입 추가
             });
 
             const response = await axios.patch(
@@ -86,10 +104,17 @@ const ReceiptRegistration = () => {
         <View style={styles.container}>
             <Text style={styles.label}>영수증 업로드</Text>
             <Button title="파일 선택" onPress={selectFile} />
+            <Button title="사진 찍기" onPress={takePhoto} />
             {selectedFile && (
-                <Text style={styles.fileName}>
-                    선택된 파일: {selectedFile.name}
-                </Text>
+                <>
+                    <Text style={styles.fileName}>
+                        선택된 파일: {selectedFile.name}
+                    </Text>
+                    <Image
+                        source={{ uri: selectedFile.uri }}
+                        style={{ width: 100, height: 100, marginTop: 10 }}
+                    />
+                </>
             )}
             <Button title="업로드" onPress={uploadReceipt} />
         </View>
