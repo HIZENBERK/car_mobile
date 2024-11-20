@@ -12,7 +12,7 @@ const Maintenance = () => {
     const [filteredVehicles, setFilteredVehicles] = useState([]); // 필터링된 차량 목록
     const [showMenu, setShowMenu] = useState(false); // 사이드 메뉴 표시 여부
     const [menuAnimation] = useState(new Animated.Value(-300)); // 사이드 메뉴 애니메이션 값
-    const [activeMenu, setActiveMenu] = useState(null); // 활성 메뉴 상태 추가
+    const [activeMenu, setActiveMenu] = useState('Maintenance'); // 활성 메뉴 상태 추가
     const navigation = useNavigation();
 
     // 차량 정보를 불러오는 함수
