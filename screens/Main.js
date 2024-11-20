@@ -58,34 +58,38 @@ const Main = () => {
     };
 
     // 공지사항 정보를 불러오는 함수
-        const fetchNotices = async () => {
-            try {
-                const token = await AsyncStorage.getItem('access');
-                if (!token) {
-                    Alert.alert('인증 오류', '로그인이 필요합니다.');
-                    return;
-                }
-
-                const response = await axios.get('https://hizenberk.pythonanywhere.com/api/notices/all/', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
-
-                if (response.data && response.data.notices) {
-                    setNotices(response.data.notices); // 공지사항 데이터 설정
-                    const notices = response.data.notices.map(notice => `${notice.title} (작성일: ${notice.created_at})`).join('\n');
-                    Alert.alert('공지사항', notices, [{ text: '확인' }]);
-                } else {
-                    setErrorNotices('공지사항 데이터가 없습니다.');
-                }
-            } catch (err) {
-                console.error('공지사항 불러오기 실패:', err.message);
-                setErrorNotices('공지사항을 불러오지 못했습니다.');
-            } finally {
-                setLoadingNotices(false); // 로딩 종료
+    const fetchNotices = async () => {
+        try {
+            const token = await AsyncStorage.getItem('access');
+            if (!token) {
+                Alert.alert('인증 오류', '로그인이 필요합니다.');
+                return;
             }
-        };
+
+            const response = await axios.get('https://hizenberk.pythonanywhere.com/api/notices/all/', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            if (response.data && response.data.notices && response.data.notices.length > 0) {
+                // 가장 최근에 생성된 공지사항을 불러오기 위해 notices 배열을 생성일 기준으로 내림차순 정렬
+                const sortedNotices = response.data.notices.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+                const latestNotice = sortedNotices[0]; // 가장 최근 공지사항 선택
+                const formattedDate = latestNotice.created_at.split('T')[0]; // 날짜만 추출
+                setNotices([latestNotice]); // 공지사항 데이터 설정 (가장 최근 공지사항만)
+                Alert.alert('공지사항', `${latestNotice.title} (작성일: ${formattedDate})`, [{ text: '확인' }]);
+            } else {
+                setErrorNotices('공지사항 데이터가 없습니다.');
+            }
+        } catch (err) {
+            console.error('공지사항 불러오기 실패:', err.message);
+            setErrorNotices('공지사항을 불러오지 못했습니다.');
+        } finally {
+            setLoadingNotices(false); // 로딩 종료
+        }
+    };
+
 
         // 컴포넌트가 마운트될 때 차량 정보와 공지사항 정보를 불러오기 위해 호출
         useEffect(() => {
