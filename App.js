@@ -44,8 +44,8 @@ function App() {
           <Stack.Screen name="ExpenseRecord" component={ExpenseRecord} options={{ title: '지출 내역 조회' }} />
           <Stack.Screen name="ReceiptRegistration" component={ReceiptRegistration} options={{ title: '지출 내역 영수증 등록 ' }} />
           <Stack.Screen name="Maintenance" component={Maintenance} options={{ title: '정비 등록' }} />
-          <Stack.Screen name="MaintenanceRegistration" component={MaintenanceRegistration} />
-          <Stack.Screen name="NoticeDetail" component={NoticeDetail} />
+          <Stack.Screen name="MaintenanceRegistration" component={MaintenanceRegistration} options={{ title: '' }}/>
+          <Stack.Screen name="NoticeDetail" component={NoticeDetail} options={{ title: '' }}/>
 
         </Stack.Navigator>
       </NavigationContainer>
