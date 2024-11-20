@@ -15,6 +15,11 @@ const MakeExcelStyle = StyleSheet.create({
     buttonSpacing: {
         marginLeft: 10, // 버튼 간격 조정
     },
+    checkbox: {
+        margin: 0,
+        width: '10%',
+        height: '10%',
+    },
     searchBar: {
         flexDirection: 'row',
         alignItems: 'center',
