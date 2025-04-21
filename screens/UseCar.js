@@ -6,7 +6,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import Geolocation from 'react-native-geolocation-service';
 import AddressSearch from '../component/AddressSearch';
-import Icon from 'react-native-vector-icons/MaterialIcons'; // 아이콘을 사용하려면 설치 필요
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import calculateDistance from '../component/calculateDistance'; // 아이콘을 사용하려면 설치 필요
 
 
 const UseCar = () => {
@@ -26,7 +27,8 @@ const UseCar = () => {
     const [isSearchModalVisible, setIsSearchModalVisible] = useState(false); //검색창 모달 열기 여부
     const [selectedInput, setSelectedInput] = useState(null); //어떤 차량에 대해서 저장하는지에 대한 변수
     const [isCostModalVisible, setIsCostModalVisible] = useState(false); // 비용 입력 모달 보이기 여부
-    const [drivingPurpose, setDrivingPurpose] = useState('출/퇴근'); // 기본 용도
+    const [drivingPurpose, setDrivingPurpose] = useState('commuting'); // 기본 용도
+    const [afterTotalMileage, setAfterTotalMileage] = useState('');
     const requestLocationPermission = async () => {
         try {
             if (Platform.OS === 'android') {
@@ -54,6 +56,37 @@ const UseCar = () => {
             clearInterval(intervalId); // 기존 타이머 정리
             setIntervalId(null); // 타이머 ID 초기화
             setEndTime(new Date()); // 종료 시간을 현재 시간으로 설정
+
+            // 마지막 좌표 저장
+            Geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    setCoordinates((prevCoords) => {
+                        if (
+                            prevCoords.length === 0 ||
+                            calculateDistance(
+                                prevCoords[prevCoords.length - 1].latitude,
+                                prevCoords[prevCoords.length - 1].longitude,
+                                latitude,
+                                longitude
+                            ) >= 300
+                        ) {
+                            // 이전 좌표가 없거나, 마지막 좌표와의 거리가 300m 이상인 경우 저장
+                            return [...prevCoords, { latitude, longitude }];
+                        }
+                        return prevCoords; // 300m 미만인 경우 추가하지 않음
+                    });
+                },
+                (error) => {
+                    console.error('위치 정보 오류 (운행 종료 시):', error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 15000,
+                    maximumAge: 10000,
+                }
+            );
+
             setIsCostModalVisible(true); // 비용 입력 모달 띄우기
         } else {
             const hasPermission = await requestLocationPermission();
@@ -61,32 +94,84 @@ const UseCar = () => {
                 Alert.alert('권한 오류', '위치 접근 권한이 필요합니다.');
                 return;
             }
-            // 운행 시작
 
+            // 운행 시작
             setStartTime(new Date()); // 시작 시간을 현재 시간으로 설정
             setEndTime(null); // 종료 시간을 초기화
             setDrivingTime(0); // 운행 시간을 초기화
             setCoordinates([]); // 좌표 초기화
+
+            let secondsPassed = 0; // 경과 시간 (초)
             const id = setInterval(() => {
+                // 1초마다 타이머 갱신
                 setDrivingTime((prevTime) => prevTime + 1);
-                Geolocation.getCurrentPosition(
-                    (position) => {
-                        const { latitude, longitude } = position.coords;
-                        setCoordinates((prevCoords) => [
-                            ...prevCoords,
-                            { latitude, longitude },
-                        ]);
-                    },
-                    (error) => {
-                        console.error('위치 정보 오류:', error);
-                    },
-                    {
-                        enableHighAccuracy: true,
-                        timeout: 15000,
-                        maximumAge: 10000,
-                    }
-                );
-            }, 1000); // 매 초마다 drivingTime을 1씩 증가
+                secondsPassed += 1;
+
+                if (secondsPassed === 1) {
+                    // 첫 번째 좌표는 바로 저장 (운행 시작 시)
+                    Geolocation.getCurrentPosition(
+                        (position) => {
+                            const { latitude, longitude } = position.coords;
+
+                            // 첫 좌표 저장
+                            setCoordinates([{ latitude, longitude }]);
+                        },
+                        (error) => {
+                            console.error('위치 정보 오류 (운행 시작 시):', error);
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 15000,
+                            maximumAge: 10000,
+                        }
+                    );
+                }
+
+                if (secondsPassed % 10 === 0) {
+                    // 10초마다 위치를 저장
+                    Geolocation.getCurrentPosition(
+                        (position) => {
+                            const { latitude, longitude } = position.coords;
+
+                            setCoordinates((prevCoords) => {
+                                if (prevCoords.length === 0) {
+                                    // 첫 좌표는 무조건 저장
+                                    return [{ latitude, longitude }];
+                                }
+
+                                const lastCoord = prevCoords[prevCoords.length - 1];
+                                calculateDistance(
+                                    lastCoord.latitude,
+                                    lastCoord.longitude,
+                                    latitude,
+                                    longitude
+                                ).then((distance) => {
+                                    if (distance >= 300) {
+                                        // 300m 이상 차이나는 경우에만 저장
+                                        setCoordinates([
+                                            ...prevCoords,
+                                            { latitude, longitude },
+                                        ]);
+                                    }
+                                }).catch((error) => {
+                                    console.error('거리 계산 오류:', error);
+                                });
+
+                                return prevCoords; // 이전 좌표 반환
+                            });
+                        },
+                        (error) => {
+                            console.error('위치 정보 오류:', error);
+                        },
+                        {
+                            enableHighAccuracy: true,
+                            timeout: 15000,
+                            maximumAge: 10000,
+                        }
+                    );
+                }
+            }, 1000); // 1초마다 실행
+
             setIntervalId(id); // 타이머 ID 저장
         }
         setIsDriving(!isDriving);
@@ -106,10 +191,10 @@ const UseCar = () => {
                 departure_location: departureLocation,
                 arrival_location: arrivalLocation,
                 departure_mileage: parseFloat(totalMileage) || 0, // 예시 값, 실제 값으로 대체 필요
-                arrival_mileage: parseFloat(totalMileage) + 300, // 누적 주행거리값 + 500으로 설정 사실상 더미. 좌표 찍는걸 기반으로 운행된 km를 받아야함
+                arrival_mileage: parseFloat(afterTotalMileage) , //주행 후 누적거리
                 departure_time: startTime,
                 arrival_time: new Date(),
-                driving_purpose: drivingPurpose, // 예시 값, 실제 값으로 대체 필요
+                driving_purpose: drivingPurpose,
                 fuel_cost: fuelCost ? parseFloat(fuelCost) : null,
                 toll_fee: tollFee ? parseFloat(tollFee) : null,
                 other_costs: otherCosts ? parseFloat(otherCosts) : null,
@@ -189,8 +274,12 @@ const UseCar = () => {
         setArrivalLocation(temp);
     };
     const handleCostSubmit = () => {
-        setIsCostModalVisible(false); // 모달 닫기
+        if (!afterTotalMileage) {
+            Alert.alert('입력 오류', '주행 후 누적거리는 반드시 입력해야 합니다.');
+            return;
+        }
         saveDrivingRecord(); // 운행 기록 저장
+        setIsCostModalVisible(false); // 모달 닫기
     };
     return (
         <View style={UseCarStyle.container}>
@@ -213,9 +302,9 @@ const UseCar = () => {
                 {/* 라디오 버튼 */}
                 <View style={UseCarStyle.radioGroup}>
                     {[
-                        { label: '출/퇴근', value: '출/퇴근' },
-                        { label: '일반업무', value: '일반업무' },
-                        { label: '비업무', value: '비업무' },
+                        { label: '출/퇴근', value: 'commuting' },
+                        { label: '일반업무', value: 'business' },
+                        { label: '비업무', value: 'non_business' },
                     ].map((option) => (
                         <TouchableOpacity
                             key={option.value}
@@ -252,8 +341,20 @@ const UseCar = () => {
                         >
                             {departureLocation}
                         </Text>
-                        <TouchableOpacity onPress={swapLocations} style={{ marginHorizontal: 10 }}>
-                            <Icon name="swap-vert" size={24} color="#888" />
+                        <TouchableOpacity
+                            onPress={swapLocations}
+                            style={{
+                                marginHorizontal: 10,
+                                borderColor:'#bfbfbf',
+                                borderWidth: 3,
+                                borderRadius: 10,
+                        }}>
+                            <Text style={{
+                                    fontSize: 24,
+                                    color: '#bfbfbf',
+                            }}>
+                                ↑↓
+                            </Text>
                         </TouchableOpacity>
                     </View>
 
@@ -302,6 +403,8 @@ const UseCar = () => {
                 <View style={UseCarStyle.modalBackground}>
                     <View style={UseCarStyle.modalContent}>
                         <Text style={UseCarStyle.modalTitle}>비용 입력</Text>
+
+                        {/* 유류비 입력 */}
                         <TextInput
                             style={UseCarStyle.textInput}
                             placeholder="유류비"
@@ -309,6 +412,8 @@ const UseCar = () => {
                             onChangeText={setFuelCost}
                             keyboardType="numeric"
                         />
+
+                        {/* 통행료 입력 */}
                         <TextInput
                             style={UseCarStyle.textInput}
                             placeholder="통행료"
@@ -316,6 +421,8 @@ const UseCar = () => {
                             onChangeText={setTollFee}
                             keyboardType="numeric"
                         />
+
+                        {/* 기타 비용 입력 */}
                         <TextInput
                             style={UseCarStyle.textInput}
                             placeholder="기타 비용"
@@ -323,7 +430,20 @@ const UseCar = () => {
                             onChangeText={setOtherCosts}
                             keyboardType="numeric"
                         />
-                        <TouchableOpacity style={UseCarStyle.fullWidthButton} onPress={handleCostSubmit}>
+
+                        {/* 주행 후 누적거리 입력 (필수 항목) */}
+                        <TextInput
+                            style={UseCarStyle.textInput}
+                            placeholder="주행 후 누적거리"
+                            value={afterTotalMileage}
+                            onChangeText={setAfterTotalMileage}
+                            keyboardType="numeric"
+                        />
+
+                        <TouchableOpacity
+                            style={UseCarStyle.smallButton}
+                            onPress={handleCostSubmit}
+                        >
                             <Text style={UseCarStyle.buttonText}>확인</Text>
                         </TouchableOpacity>
                     </View>

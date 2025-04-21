@@ -6,19 +6,14 @@ import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SideMenu from './SideMenu'; // 사이드 메뉴 컴포넌트 import
 
-const Main = () => {
+const Maintenance = () => {
     const [vehicles, setVehicles] = useState([]); // 차량 목록을 저장하는 상태
     const [searchQuery, setSearchQuery] = useState(''); // 검색 쿼리 상태
     const [filteredVehicles, setFilteredVehicles] = useState([]); // 필터링된 차량 목록
     const [showMenu, setShowMenu] = useState(false); // 사이드 메뉴 표시 여부
     const [menuAnimation] = useState(new Animated.Value(-300)); // 사이드 메뉴 애니메이션 값
-    const [activeMenu, setActiveMenu] = useState(null); // 활성 메뉴 상태 추가
+    const [activeMenu, setActiveMenu] = useState('Maintenance'); // 활성 메뉴 상태 추가
     const navigation = useNavigation();
-
-    // 공지사항 상태 추가
-    const [notices, setNotices] = useState([]); // 공지사항 데이터를 저장
-    const [loadingNotices, setLoadingNotices] = useState(true); // 로딩 상태
-    const [errorNotices, setErrorNotices] = useState(null); // 오류 상태
 
     // 차량 정보를 불러오는 함수
     const fetchVehicles = async () => {
@@ -41,8 +36,9 @@ const Main = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('차량 정보:', data); // 데이터 형식 확인을 위해 콘솔에 출력
+                console.log('차량 정보 전체:', data); // 데이터 형식 확인을 위해 콘솔에 출력
                 if (data && Array.isArray(data.vehicles)) {
+                    console.log('차량 목록:', data.vehicles); // 차량 목록 확인
                     setVehicles(data.vehicles);
                     setFilteredVehicles(data.vehicles);
                 } else {
@@ -52,50 +48,14 @@ const Main = () => {
                 Alert.alert("오류", "차량 정보를 불러오는 데 실패했습니다.");
             }
         } catch (error) {
-            console.error(error);
+            console.error('서버 오류:', error);
             Alert.alert("오류", "서버와의 연결에 실패했습니다.");
         }
     };
 
-    // 공지사항 정보를 불러오는 함수
-    const fetchNotices = async () => {
-        try {
-            const token = await AsyncStorage.getItem('access');
-            if (!token) {
-                Alert.alert('인증 오류', '로그인이 필요합니다.');
-                return;
-            }
-
-            const response = await axios.get('https://hizenberk.pythonanywhere.com/api/notices/all/', {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
-
-            if (response.data && response.data.notices && response.data.notices.length > 0) {
-                // 가장 최근에 생성된 공지사항을 불러오기 위해 notices 배열을 생성일 기준으로 내림차순 정렬
-                const sortedNotices = response.data.notices.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-                const latestNotice = sortedNotices[0]; // 가장 최근 공지사항 선택
-                const formattedDate = latestNotice.created_at.split('T')[0]; // 날짜만 추출
-                setNotices([latestNotice]); // 공지사항 데이터 설정 (가장 최근 공지사항만)
-                Alert.alert('공지사항', `${latestNotice.title} (작성일: ${formattedDate})`, [{ text: '확인' }]);
-            } else {
-                setErrorNotices('공지사항 데이터가 없습니다.');
-            }
-        } catch (err) {
-            console.error('공지사항 불러오기 실패:', err.message);
-            setErrorNotices('공지사항을 불러오지 못했습니다.');
-        } finally {
-            setLoadingNotices(false); // 로딩 종료
-        }
-    };
-
-
-        // 컴포넌트가 마운트될 때 차량 정보와 공지사항 정보를 불러오기 위해 호출
-        useEffect(() => {
-            fetchVehicles();
-            fetchNotices();
-        }, []);
+    useEffect(() => {
+        fetchVehicles();
+    }, []);
 
     // 차량 번호 검색 함수
     const handleSearch = () => {
@@ -105,6 +65,7 @@ const Main = () => {
             const filtered = vehicles.filter(vehicle =>
                 vehicle.license_plate_number.includes(searchQuery)
             );
+            console.log('검색 결과:', filtered); // 검색 결과를 콘솔에 출력
             setFilteredVehicles(filtered);
         }
     };
@@ -148,14 +109,14 @@ const Main = () => {
                                 </Text>
                                 <TouchableOpacity
                                     style={MainStyle.registrationButton}
-                                    onPress={() => navigation.navigate('UseCar', {
+                                    onPress={() => navigation.navigate('MaintenanceRegistration', {
                                             vehicleId: vehicle.id,
                                             licensePlateNumber: vehicle.license_plate_number,
                                             totalMileage: vehicle.total_mileage,
                                             vehicleType: vehicle.vehicle_type
                                         })}
                                 >
-                                    <Text style={MainStyle.registrationButtonText}>사용 등록</Text>
+                                    <Text style={MainStyle.registrationButtonText}>정비 등록</Text>
                                 </TouchableOpacity>
                             </View>
                         ))
@@ -201,4 +162,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Main;
+export default Maintenance;

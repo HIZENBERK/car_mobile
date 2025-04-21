@@ -1,27 +1,46 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Switch, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native'; // React Navigation
-import RadioButtonGroup from '../component/RadioButtonGroup'; // 라디오 버튼 컴포넌트 가져오기
+import { useNavigation } from '@react-navigation/native';
+import RadioButtonGroup from '../component/RadioButtonGroup';
 import SettingStyle from '../style/SettingStyle'; // 스타일 파일 가져오기
-import Orientation from 'react-native-orientation-locker'; // react-native-orientation-locker 임포트
+import Orientation from 'react-native-orientation-locker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Setting = () => {
-  const navigation = useNavigation(); // 내비게이션을 사용하여 페이지 간 이동
+  const navigation = useNavigation();
   const [isScreenAlwaysOn, setIsScreenAlwaysOn] = useState(false);
   const [selectedTimeFormat, setSelectedTimeFormat] = useState('system');
   const [selectedScreenOrientation, setSelectedScreenOrientation] = useState('system');
 
   useEffect(() => {
-    // 화면 방향을 초기화합니다.
+    // 화면 방향 초기화
     if (selectedScreenOrientation === 'landscape') {
       Orientation.lockToLandscape();
     } else if (selectedScreenOrientation === 'portrait') {
       Orientation.lockToPortrait();
     } else {
-      // 시스템 기본 설정
       Orientation.unlockAllOrientations();
     }
   }, [selectedScreenOrientation]);
+
+  // 로그아웃 함수
+  const handleLogout = async () => {
+    try {
+      // AsyncStorage에서 모든 로그인 정보 삭제
+      await AsyncStorage.removeItem('access');
+      await AsyncStorage.removeItem('email');
+      await AsyncStorage.removeItem('userId');
+      await AsyncStorage.removeItem('name');
+      await AsyncStorage.removeItem('department');
+      await AsyncStorage.removeItem('position');
+
+      Alert.alert('로그아웃', '로그아웃이 완료되었습니다.');
+      navigation.navigate('Login'); // 로그인 화면으로 이동
+    } catch (error) {
+      Alert.alert('로그아웃 실패', '네트워크 오류가 발생했습니다.');
+      console.error('로그아웃 실패:', error);
+    }
+  };
 
   return (
     <View style={SettingStyle.container}>
@@ -73,19 +92,13 @@ const Setting = () => {
         <Text style={SettingStyle.buttonText}>비밀번호 변경</Text>
       </TouchableOpacity>
 
-      {/* 공지사항 버튼 */}
-      <TouchableOpacity
-        style={SettingStyle.fullWidthButton}
-        onPress={() => navigation.navigate('Notice')}>
-        <Text style={SettingStyle.buttonText}>공지사항</Text>
-      </TouchableOpacity>
-
       {/* 로그아웃 버튼 */}
       <TouchableOpacity
         style={[SettingStyle.fullWidthButton, SettingStyle.logoutButton]}
-        onPress={() => Alert.alert('로그아웃', '로그아웃이 완료되었습니다.')}>
+        onPress={handleLogout}>
         <Text style={SettingStyle.buttonText}>로그아웃</Text>
       </TouchableOpacity>
+
     </View>
   );
 };

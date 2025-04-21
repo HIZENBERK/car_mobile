@@ -5,7 +5,6 @@ import TmapAddressSearchStyle from '../style/TmapAddressSearchStyle';
 const TmapAddressSearch = ({ onSelectAddress, onClose }) => {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
-
     const handleSearch = async () => {
         if (!query) {return;}
         try {
@@ -16,7 +15,7 @@ const TmapAddressSearch = ({ onSelectAddress, onClose }) => {
                     resCoordType: 'WGS84GEO',
                     reqCoordType: 'WGS84GEO',
                     appKey: 'yKGZvvXxdt98xaMpb1Ftv90nAsgrXvJiNocjtuyd',
-                    count: 10,
+                    count: 30,
                 },
             });
             console.log(response.data.searchPoiInfo.pois.poi);
